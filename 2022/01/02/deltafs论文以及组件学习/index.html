@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="deltafs以及indexfs论文以及组件学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="deltafs论文以及组件学习">
+<meta property="og:url" content="http://example.com/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="想学打球的菜鸡">
+<meta property="og:description" content="deltafs以及indexfs论文以及组件学习">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/architecture.png">
+<meta property="og:image" content="http://example.com/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/namespace-partion.png">
+<meta property="og:image" content="http://example.com/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/LSM-2-data-structure.png">
+<meta property="article:published_time" content="2022-01-02T07:28:04.000Z">
+<meta property="article:modified_time" content="2024-02-26T13:02:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/architecture.png">
+
+<link rel="canonical" href="http://example.com/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>deltafs论文以及组件学习 | 想学打球的菜鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">想学打球的菜鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">资料整理</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-academic">
+
+    <a href="/academic/" rel="section"><i class="fa fa-academic fa-fw"></i>个人主页</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="已经混了一年研究生的摆子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想学打球的菜鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          deltafs论文以及组件学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-02 15:28:04" itemprop="dateCreated datePublished" datetime="2022-01-02T15:28:04+08:00">2022-01-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-02-26 21:02:07" itemprop="dateModified" datetime="2024-02-26T21:02:07+08:00">2024-02-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>deltafs以及indexfs论文以及组件学习<span id="more"></span></li>
+</ul>
+<h2 id="论文学习部分"><a href="#论文学习部分" class="headerlink" title="论文学习部分"></a>论文学习部分</h2><ul>
+<li>indexfs学习篇<ul>
+<li><p>简介：专门针对现有的分布式文件系统，IndexFS作为一个中间组件，使用基于表的体系结构，根据每个目录增量地划分名称空间，为小目录保留服务器和磁盘位置。一种优化的日志结构化布局被用于有效地存储元数据和小文件。支持的包括PVFS,HDFS,LUSTRE等等。</p>
+</li>
+<li><p>indexfs架构介绍：indexfs使用的是一个客户端-服务端的体系结构架构图如下：<img src="/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/architecture.png" class=""> </p>
+<ul>
+<li>indexfs客户端：用户程序直接和indexfs的client lib进行交互，这里客户端的程序会根据用户程序的文件操作请求进行分类并重定向到对应的地方。比如会向indexfs服务器发送的是元数据请求（比如创建文件这种操作）和一些小于64KB的文件数据请求；如果遇到的是大文件的操作请求，客户端的程序就会把读操作重定向到下层的存储的分布文件系统（方便利用带宽）。一个刚刚创建的但是可能正在改变的文件会在下方的存储集群中重新打开（通过client模块）。如果对这个文件是正在被写入，那么它的文件信息（比如文件大小以及最后获取时间）可能也同时变化。indexfs服务端会通过元数据路径在文件关闭的时候获取到这些变化。indexfs客户端会部署多个cache来加强对于一些频繁访问的元数据进行性能提升，以及用于（回写）批量插入的完整子树。</li>
+<li>indexfs服务端：每一个服务端都会保存互不重叠的元数据，并且会把元数据以及小文件数据存储到底层的存储集群中。文件系统元数据以目录条目子集的粒度分布在各个服务器上。文件系统元数据以目录条目子集的粒度分布在各个服务器上。如果文件大小超过一定阈值就会进行分段。使用了LSM树的数据结构把元数据和小文件数据打包到不可变的排序文件。（这个数据结构在lustre文件系统中也被使用）。通过LSM树把随机更新变换成为顺序写入，大大提高了元数据创建等操作的性能。同时，为了实现容错，indexfs使用RAID技术在底层存储节点容错。</li>
+<li>动态命名分区：专门用来在元数据服务器集群上分配元数据。所有的文件会被放到一个初始的元数据服务器上，并且所有在该目录下的文件都存储在相同的元数据服务器上。这种方式对于小文件数据很有效果（因为90%的文件目录下有少于128个项）。当然这个初始元数据服务器是随机选择的。为了实现负载均衡，这里使用了“power of two choices”负载均衡技术来让每一个元数据服务器上存储的目录条数达到平衡（这个技术就是随机探测两个元数据服务器选择目录条数较少的那个作为初始元数据服务器）。对于有一些文件，目录条数会随着时间逐渐增长到一个十分巨大的程度，indexfs使用了GIGA+二分法把一个文件下的目录重新分配到其他的元数据服务器上。对每一个目录重新进行hash。这种拆分会在每一个服务器至少有了一个分区后停止，indexfs会维护客户端到服务端的映射来保证一致性。</li>
+<li>无状态目录缓存：为了避免每次访问某个文件目录需要一层一层逐级访问以及权限检查等等，indexfs使用了缓存机制来提高性能。缓存的内容是目录路径位于哪些服务器上。一旦通过缓存获取到了服务器的编号，仍旧需要通过rpc测试每一个路径名的存在性以及权限，由于这种缓存仅仅缓存了服务器的位置，仍旧会导致靠近根目录顶部的服务器发生高频访问现象（见下图），indexfs通过短期内在客户端缓存上缓存每个路径名以及其权限，同时对任何修改操作进行延迟到这个期间结束之后来保证不会发生失效风暴并保证了数据的一致性。这就只需要元数据服务器只用记录内存中某个文件路径的过期时间。服务器将文件条目固定在其内存中，并阻止更新，直到所有时间到期。对于时间间隔的选取，indexfs进行了多种策略的对比：<ul>
+<li>首先是选取一个固定的时间间隔，比如200ms。但是这种情况比如说顶部的root目录这种会被经常访问，并且几乎不可能被修改，这就会导致这种固定时间间隔没有必要。</li>
+<li>indexfs提出了两个指标来调整间隔时间：第一个是目录的深度数（比如每深入一层就会增加3s延迟这种），另外的一个策略是目录条数的最近读写比率。这个比例仅仅是针对缓存在元数据服务器中的文件条目假设r和w分别是读请求和写请求的最近计数，那么提供的租赁期限为$\frac{r}{w+r}·L_r$，其中我们的实验中的$L_r&#x3D;1s$。此策略可确保读取密集型目录条目的间隔时间将比写密集型目录条目的租赁时间更长。    <img src="/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/namespace-partion.png" class=""></li>
+</ul>
+</li>
+<li>日志结构化的元数据存储格式：indexfs元数据存储使用了LSM结构树作为存储结构，使用了leveldb开源库把元数据和小文件转成GB为单位的块在底层存储集群中进行存储。leveldb提供了一个简单的kv存储结构支持单点查询和区间查询，leveldb会在内存缓冲区中积累最近的更改，并且把更改附加到预写日志中以实现容错机制。当内存缓冲区满了之后（比如16MB）这些发生更改的条目会被排序索引，并作为一个SSTable文件写入到磁盘中。</li>
+<li>元数据模式：indexfs嵌入了带有目录条目的inode属性和小文件，并且将他们存储在一个LSM树中。接下来介绍使用LSM树实现基本设计。首先需要解决的是如何吧文件系统的命名空间转换成为键值对，这里把元数据转换成为192位的键。其中64位是用来存储一个条目的父目录inode号，后面的128位是用来存储文件名（路径的最后一个文件）字符串的哈希值，值包括了文件名字符串以及自己的inode编号，文件归属，访问模式，文件大小，时间戳等等。如果是小文件（大小小于64kb）value值就是文件内容。如果是遇到了大型文件，value值存储的就是文件在底层存储集群中的链接：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>父目录的inode（64位），文件名的哈希值（128位）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>值</td>
+<td>文件名，文件归属，文件其他信息 or 小文件数据 or 大文件在底层存储集群的链接</td>
+</tr>
+</tbody></table>
+<ul>
+<li>针对快速插入的列样式表：对于有一些应用，比如添加检查点，希望能够获得快速插入和查找的性能而并不会注重文件列表的性能（这里是因为如果按照第一种LSM存储模式需要花费一定时间在数据压缩上面）。IndexFS使用了第二种LSM表模式，称为列样式，它加快了插入、修改和单项查找的吞吐量。使用这第二个较小的表来执行最重要的操作，IndexFS可以禁用整个元数据表的压缩。这里看到添加了第二个索引表，是根据key排序的，存储了最终的文件名，权限和一个指向了对应的元数据表的指针（就相当于做了一个更小的快速索引表）。这种方法的缺点是，完整表作为未压缩日志文件的集合，在磁盘上不会按顺序排序，因此在索引表中无法满足的扫描将更昂贵。  <img src="/2022/01/02/deltafs%E8%AE%BA%E6%96%87%E4%BB%A5%E5%8F%8A%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/LSM-2-data-structure.png" class=""></li>
+<li>元数据批量插入：indexfs服务器每秒大约只能创建10000个文件。这和其余的文件系统相比就差了很多，indexfs决定使用回写缓存，达到高速的批量插入。由于在indexfs中元数据物理上被存储为SSTtable，如果知道某个文件夹是新的，indexfs完全可以在本地客户端使用一个SSTtable把所有需要插入的数据都放进去，这就不需要每创建一个文件都需要去元数据服务端产生一次rpc通信，把服务器端的性能瓶颈放在了客户端来解决。为了实现这种思路，每一个indexfs客户端都需要配备一个嵌入式元数据存储后端库，保证在本地客户端执行元数据操作，并且将SSTtable放到底层共享文件系统中。indexfs会自动合并外部的SSTtable。</li>
+</ul>
+</li>
+<li><p>小结：</p>
+<ul>
+<li>解决的问题：<ul>
+<li>在做N-N Checkpointing的时候产生的高并发metadata操作；</li>
+<li>一些复杂的管理任务中出现的频繁的元数据读取，扫描；</li>
+<li>文件大小，目录大小不均衡产生的单热点问题</li>
+<li>首先，类似社交网络，文件的大小，目录的大小都遵守类似的长尾规律：文件系统中大部分的目录中文件数目小于128，但是极少数目录可以有上百万个子目录。为了能够将小的目录存连续的放在本地，并且将大的目录分布到多台机器上，IndexFS引入了Giga+的动态分割算法，动态的根据目录的增长，引入更多的服务器来存储。</li>
+<li>针对频繁的读，IndexFS引入了客户端缓存。客户端缓存的最大问题就是不一致性，这在客户端数目远远大于服务器数目的环境下，容易导致缓存无效风暴：一个小的服务器端修改，就能导致海量的客户端重新请求数据。这里使用的是根据每个条目的访问热度添加一段延迟时间，阻止写操作来保证一致性。</li>
+<li>针对高频写，IndexFS首先在服务器端使用LSM来存储数据 (实际上使用的是LevelDB)。 LSM是典型的为写优化的存储结构，但随之而来的压缩数据会占据很长的时间。IndexFS通过只将部分数据(主要是文件的 permission数据，以及一个指针)存储在LSM中，将数据极大的减少了压缩的次数；未缓存的数据也存放在LSM中，但是不再进行压缩。当需要访问非缓存的数据的时候，可以先搜索缓存部分的LSM，然后直接通过指针找到对应的非缓存数据。代价是一次额外的磁盘请求，好处是大大减少了压缩产生的延迟。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="组件学习部分"><a href="#组件学习部分" class="headerlink" title="组件学习部分"></a>组件学习部分</h2><ul>
+<li>indexfs学习篇<ul>
+<li><strong>说明</strong>:由于indexfs的作者在2016年之后发布了最后一版的indexfs之后就没有继续维护了，于是我这里决定先将开源的代码重新跑起来。发现只用把依赖包安装正确的版本即可正常运行。（注意thrift的版本，由于新版本有一些头文件已经被合并或是改名，这里还是建议安装老版本的thrift）</li>
+<li>编译运行indexfs，首先我们的关注点在iotest这个文件夹里，这里作者给我们提供了几个test测试：<ol>
+<li>tree测试</li>
+<li>sstcomp测试</li>
+<li>cache测试</li>
+<li>rpc测试<br>  测试命令以tree_test为例：  <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo .<span class="regexp">/sbin/</span>start-idxfs.sh</span><br><span class="line">sudo .<span class="regexp">/sbin/</span>tree-test.sh</span><br></pre></td></tr></table></figure>
+  上面是已经写好的脚本文件我们也可以直接进去修改脚本文件中的–task传入的参数修改测试。</li>
+</ol>
+</li>
+<li>为了完成我的毕业设计，我们重点的注意力放在了cache端，如何把indexfs的server端的cache用pmemkv全部替代掉，然后进行测速。<ul>
+<li>indexfs cache实现源码分析<ul>
+<li>首先看了作者是怎么实现测试的，cachetest就是通过不断对文件的权限进行修改来达到</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/19/pmemkv%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/" rel="prev" title="pmemkv组件学习">
+      <i class="fa fa-chevron-left"></i> pmemkv组件学习
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/01/23/intel-summit-debugging-tools/" rel="next" title="intel_summit_debugging_tools">
+      intel_summit_debugging_tools <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0%E9%83%A8%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">论文学习部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0%E9%83%A8%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">组件学习部分</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">已经混了一年研究生的摆子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yux20000304" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yux20000304" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yuxinyang@hust.edu.cn" title="E-Mail → mailto:yuxinyang@hust.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'e2631b7e4c831f9e25a8',
+      clientSecret: '5ca1a49b2a28ec6f2a80cc9e45ca8243cc839558',
+      repo        : 'blog-comments',
+      owner       : 'yux20000304',
+      admin       : ['yux20000304'],
+      id          : 'cfc5d6536d7bc27b0446e5a20bc5f161',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+
+
+</body>
+</html>

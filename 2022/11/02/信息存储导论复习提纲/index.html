@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="信息存储导论复习提纲">
+<meta property="og:type" content="article">
+<meta property="og:title" content="信息存储导论复习提纲">
+<meta property="og:url" content="http://example.com/2022/11/02/%E4%BF%A1%E6%81%AF%E5%AD%98%E5%82%A8%E5%AF%BC%E8%AE%BA%E5%A4%8D%E4%B9%A0%E6%8F%90%E7%BA%B2/index.html">
+<meta property="og:site_name" content="想学打球的菜鸡">
+<meta property="og:description" content="信息存储导论复习提纲">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-11-02T02:27:01.000Z">
+<meta property="article:modified_time" content="2024-02-26T13:02:07.000Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/11/02/%E4%BF%A1%E6%81%AF%E5%AD%98%E5%82%A8%E5%AF%BC%E8%AE%BA%E5%A4%8D%E4%B9%A0%E6%8F%90%E7%BA%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>信息存储导论复习提纲 | 想学打球的菜鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">想学打球的菜鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">资料整理</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-academic">
+
+    <a href="/academic/" rel="section"><i class="fa fa-academic fa-fw"></i>个人主页</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/02/%E4%BF%A1%E6%81%AF%E5%AD%98%E5%82%A8%E5%AF%BC%E8%AE%BA%E5%A4%8D%E4%B9%A0%E6%8F%90%E7%BA%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="已经混了一年研究生的摆子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想学打球的菜鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          信息存储导论复习提纲
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-11-02 10:27:01" itemprop="dateCreated datePublished" datetime="2022-11-02T10:27:01+08:00">2022-11-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-02-26 21:02:07" itemprop="dateModified" datetime="2024-02-26T21:02:07+08:00">2024-02-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%9A%84/" itemprop="url" rel="index"><span itemprop="name">杂七杂八的</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>信息存储导论复习提纲</p>
+<span id="more"></span>
+
+<p><strong>这是研究生课程信息存储导论的复习提纲</strong></p>
+<h2 id="概论"><a href="#概论" class="headerlink" title="概论"></a>概论</h2><ol>
+<li>存储器类型：半导体主存储器，磁存储器，光存储器</li>
+<li>存储器分层结构：SRAM(CACHE MEMORY),DRAM(MAIN MEMORY),DRAM(EXPANDED MEMORY),SSD(FLASH MEMORY),DASD,BACKUP,REMOVABLE MEDIA</li>
+<li>发展趋势</li>
+</ol>
+<h2 id="磁记录原理"><a href="#磁记录原理" class="headerlink" title="磁记录原理"></a>磁记录原理</h2><ol>
+<li>概述</li>
+<li>磁头场</li>
+<li>媒体磁化与写入效果</li>
+<li>读出信号波形分析</li>
+<li>区位记录原理</li>
+<li>应用</li>
+</ol>
+<h2 id="固态存储技术"><a href="#固态存储技术" class="headerlink" title="固态存储技术"></a>固态存储技术</h2><ol>
+<li>相关技术，常见的SSD种类：NAND FLASH的SSD，3D Xpoint的SSD，基于DDR DRAM的SSD（需要独立电源，并且需要硬盘备份）。</li>
+<li>固态盘接口：SATA接口，PCIE总线接口（AHCI），NVMe协议的PCIE接口</li>
+<li>SSD评价指标：性能，寿命，能耗。</li>
+<li>关键技术研究</li>
+</ol>
+<h2 id="光记录原理"><a href="#光记录原理" class="headerlink" title="光记录原理"></a>光记录原理</h2><ol>
+<li>概述。光记录种类有：CD,CD-ROM,CD-I,DVI,WORM,可擦光盘。</li>
+<li>光盘存储器机理</li>
+<li>重写</li>
+<li>光路系统基础</li>
+<li>激光光源的选择</li>
+</ol>
+<h2 id="存储概述与RAID原理介绍"><a href="#存储概述与RAID原理介绍" class="headerlink" title="存储概述与RAID原理介绍"></a>存储概述与RAID原理介绍</h2><ul>
+<li>RAID原理介绍：<ol>
+<li>RAID 0:数据分割，无容错能力（容量为磁盘大小）</li>
+<li>RAID 1:镜像，双拷贝（容量为总磁盘大小的一半）</li>
+<li>RAID 2:海明码，不具有商用价值（）</li>
+<li>RAID 3:并行，位交叉，单校验盘（奇偶校验，细粒度）</li>
+<li>RAID 4:并行，块交叉，单校验盘（奇偶校验，粗粒度）</li>
+<li>RAID 5:独立，循环校验盘（可用磁盘数为n-1）</li>
+<li>RAID 6:容双盘错，块交叉，今年被广泛重视</li>
+</ol>
+</li>
+</ul>
+<h2 id="RAID与SCSI"><a href="#RAID与SCSI" class="headerlink" title="RAID与SCSI"></a>RAID与SCSI</h2><ul>
+<li>RAID的实现</li>
+<li>SCSI：计算机与外部设备间系统级接口的标准。SCSI标准定义了命令，通信协议，实体电气特性等。</li>
+<li>串行SCSI（SAS）</li>
+<li>SCSI命令详解：把对同一块磁盘的多块访问合并成一个访问命令。具体原理看ppt。<h2 id="SAN与NAS"><a href="#SAN与NAS" class="headerlink" title="SAN与NAS"></a>SAN与NAS</h2></li>
+<li>DAS</li>
+<li>IP SAN和iSCSI</li>
+<li>SAN:存储局域网。把存储设备从服务器分离出来，通过网络连接进行集中管理。</li>
+<li>NAS:附网存储。本质上是一种应用服务器。其内部集成了处理器和存储设备，可以直接连入TCP&#x2F;IP网络，通过TCP&#x2F;IP协议向其他的计算机提供文件共享服务。是一个专用的文件服务器。</li>
+</ul>
+<h2 id="对象存储技术"><a href="#对象存储技术" class="headerlink" title="对象存储技术"></a>对象存储技术</h2><ul>
+<li>OSD</li>
+<li>CAS</li>
+<li>OSS </li>
+<li>基本上在之前的项目调研中了解过了</li>
+</ul>
+<h2 id="存储管理和数据保护"><a href="#存储管理和数据保护" class="headerlink" title="存储管理和数据保护"></a>存储管理和数据保护</h2><ul>
+<li>存储虚拟化(SVC)</li>
+<li>软件定义存储(SDS,RPO,RTO,Data Replication,CDP)</li>
+<li>快照技术(Snapshot)</li>
+<li>重复数据的删除(Data Deduplication)</li>
+</ul>
+<h2 id="往年试题"><a href="#往年试题" class="headerlink" title="往年试题"></a>往年试题</h2><ol>
+<li><p>名词解释</p>
+<ul>
+<li>iSCSI：Internet小型计算机系统接口，又称为IP-SAN，是一种基于因特网及SCSI-3协议下的存储技术。</li>
+<li>OBS：对象存储。</li>
+<li>NVMe：是一个在工业界推广PCIe SSD接口的标准</li>
+<li>SDS：软件定义存储。</li>
+</ul>
+</li>
+<li><p>简答题</p>
+<ul>
+<li>基于 NAND Flash 的固态盘控制器一般应包含哪些功能部件？<br> 答：包括主机接口控制器，微处理器，内存控制器，DMA，通道控制器。</li>
+<li>存储虚拟化可以哪几个层次实现？与软件定义存储的主要区别？<br> 答：主机&#x2F;服务器的虚拟化，基于网络的虚拟化，基于存储设备的虚拟化。软件定义存储包含了存储虚拟化，简单来说，软件定义存储包括了存储虚拟化加自动化两个部分。</li>
+<li>重复数据删除技术的代价与收益？<br> 答：收益有1.节省存储空间2.降低成本3.节省网络带宽4.提升写入性能。代价是分块算法会产生计算开销。数据块指纹索引会产生开销，数据块碎片化会导致数据恢复效率较低。</li>
+</ul>
+</li>
+<li><p>思考题</p>
+<ul>
+<li><p>依据系统可靠性和可用性的计算方法，(1) 分析随着单个磁盘容量不断增大，RAID 6及能容更多盘故障的系统越来越受重视的原因。(2) 归纳总结提高RAID可用性的技术途径。</p>
+</li>
+<li><p>NVM 的特点与优势？目前应用 NVM 为了充分发挥其优势需要解决哪些问题？</p>
+</li>
+</ul>
+</li>
+<li><p>综合题<br> 由 8 块 1TB 磁盘组成的 RAID 5 阵列，采用左不对称的配置方式，每个磁盘的块大小为 32KB，磁盘编号为 0–7。</p>
+<ul>
+<li>该系统的实际可见容量？ 7TB</li>
+<li>若用户对该阵列发出写请求，起始扇区为 640（十进制，每个扇区大小为512B），数据长度为 64KB，那么为了完成该写请求最少需要多少次磁盘 I&#x2F;O？ 6</li>
+<li>若磁盘 3 出现故障不能读写，系统进入恢复阶段，则此时要读出题目2中的数据比正常状态下要多执行多少次磁盘 I&#x2F;O？ 5</li>
+</ul>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%AE%9E%E9%AA%8C/" rel="prev" title="计算机系统设计实验">
+      <i class="fa fa-chevron-left"></i> 计算机系统设计实验
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/06/%E5%B9%B6%E8%A1%8C%E5%A4%8D%E4%B9%A0%E6%8F%90%E7%BA%B2/" rel="next" title="并行复习提纲">
+      并行复习提纲 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">概论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E8%AE%B0%E5%BD%95%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">磁记录原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BA%E6%80%81%E5%AD%98%E5%82%A8%E6%8A%80%E6%9C%AF"><span class="nav-number">3.</span> <span class="nav-text">固态存储技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%89%E8%AE%B0%E5%BD%95%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">光记录原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%A6%82%E8%BF%B0%E4%B8%8ERAID%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">5.</span> <span class="nav-text">存储概述与RAID原理介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RAID%E4%B8%8ESCSI"><span class="nav-number">6.</span> <span class="nav-text">RAID与SCSI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SAN%E4%B8%8ENAS"><span class="nav-number">7.</span> <span class="nav-text">SAN与NAS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%AD%98%E5%82%A8%E6%8A%80%E6%9C%AF"><span class="nav-number">8.</span> <span class="nav-text">对象存储技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%E5%92%8C%E6%95%B0%E6%8D%AE%E4%BF%9D%E6%8A%A4"><span class="nav-number">9.</span> <span class="nav-text">存储管理和数据保护</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%80%E5%B9%B4%E8%AF%95%E9%A2%98"><span class="nav-number">10.</span> <span class="nav-text">往年试题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">已经混了一年研究生的摆子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yux20000304" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yux20000304" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yuxinyang@hust.edu.cn" title="E-Mail → mailto:yuxinyang@hust.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'e2631b7e4c831f9e25a8',
+      clientSecret: '5ca1a49b2a28ec6f2a80cc9e45ca8243cc839558',
+      repo        : 'blog-comments',
+      owner       : 'yux20000304',
+      admin       : ['yux20000304'],
+      id          : 'b3a3f83165b0938b5060593e4fc0aa4c',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+
+
+</body>
+</html>

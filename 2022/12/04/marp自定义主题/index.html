@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="考虑自己制作一个hust背景的ppt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="marp自定义主题">
+<meta property="og:url" content="http://example.com/2022/12/04/marp%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98/index.html">
+<meta property="og:site_name" content="想学打球的菜鸡">
+<meta property="og:description" content="考虑自己制作一个hust背景的ppt">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-04T04:37:35.000Z">
+<meta property="article:modified_time" content="2024-02-26T13:02:07.000Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/12/04/marp%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>marp自定义主题 | 想学打球的菜鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">想学打球的菜鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">资料整理</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">36</span></a>
+
+  </li>
+        <li class="menu-item menu-item-academic">
+
+    <a href="/academic/" rel="section"><i class="fa fa-academic fa-fw"></i>个人主页</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/12/04/marp%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="已经混了一年研究生的摆子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想学打球的菜鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          marp自定义主题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-12-04 12:37:35" itemprop="dateCreated datePublished" datetime="2022-12-04T12:37:35+08:00">2022-12-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-02-26 21:02:07" itemprop="dateModified" datetime="2024-02-26T21:02:07+08:00">2024-02-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7%E6%95%B4%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">工具整理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>考虑自己制作一个hust背景的ppt</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="Marp自定义主题"><a href="#Marp自定义主题" class="headerlink" title="Marp自定义主题"></a>Marp自定义主题</h1><h2 id="Marp介绍"><a href="#Marp介绍" class="headerlink" title="Marp介绍"></a>Marp介绍</h2><ul>
+<li><p>什么是Marp？</p>
+<p>  Marpit是用于从Markdown创建幻灯片的瘦框架。它可以将Markdown和CSS主题转换为由静态HTML和CSS组成的幻灯片，并通过打印创建可转换为幻灯片PDF的网页。</p>
+</li>
+</ul>
+<h2 id="Marp的简单操作"><a href="#Marp的简单操作" class="headerlink" title="Marp的简单操作"></a>Marp的简单操作</h2><ol>
+<li><p>分页操作<br> 使用“—”进行分页。</p>
+ <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># page1</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="comment"># page2</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---  </span></span><br></pre></td></tr></table></figure></li>
+<li><p>不同指令的作用域</p>
+<ul>
+<li>有些参数可以指定在某页才生效：backgroundColor，paginate，header，footer，class等等，设置为本地作用域的办法是在指令开头添加_即可。</li>
+<li>有些参数被设置为了全局作用域：theme，style，headingDivider等等。</li>
+</ul>
+</li>
+<li><p>图片语法（这个比较实用）</p>
+<ul>
+<li>常见的markdown图片引用格式：  <figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!<span class="selector-attr">[设置的参数]</span>(image.png)</span><br></pre></td></tr></table></figure>
+  在设置的参数这一栏里面可以对图片进行一定的处理。</li>
+<li>设置背景，可以同时添加多张图片作为背景，默认是横向排列的</li>
+<li><strong>背景和文字分离：</strong>可以通过在设置参数栏中设置靠左或是靠右如：  <figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">!<span class="selector-attr">[bg left]</span>(image.png)</span><br><span class="line"></span><br><span class="line"><span class="comment">//else</span></span><br><span class="line">!<span class="selector-attr">[bg right:40%]</span>(image1.png)</span><br><span class="line">!<span class="selector-attr">[bg]</span>(image2.png)</span><br></pre></td></tr></table></figure>
+  上述的第二个例子会把两张图片作为背景放在ppt的右侧的40%部分，文字部分放在左侧。</li>
+<li>可以设置背景和字体的颜色：  <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Hex color (White BG + Black text)</span></span><br><span class="line"></span><br><span class="line"><span class="type">![bg](#fff)</span></span><br><span class="line"><span class="type">![](#000)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="comment"># Named color (rebeccapurple BG + White text)</span></span><br><span class="line"></span><br><span class="line"><span class="type">![bg](rebeccapurple)</span></span><br><span class="line"><span class="type">![](white)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="comment"># RGB values (Orange BG + White text)</span></span><br><span class="line"></span><br><span class="line"><span class="type">![bg](</span><span class="string">&lt;rgb(255,128,0)&gt;)</span></span><br><span class="line"><span class="type">![](</span><span class="string">&lt;rgb(255,255,255)&gt;)</span></span><br></pre></td></tr></table></figure>
+<h2 id="如何创建自己的主题css文件"><a href="#如何创建自己的主题css文件" class="headerlink" title="如何创建自己的主题css文件"></a>如何创建自己的主题css文件</h2></li>
+</ul>
+</li>
+<li><p>首先需要把css模板导入到vscode的配置文件中</p>
+ <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="regexp">//</span>放到.vscode/settings.json文件中</span><br><span class="line">&#123;</span><br><span class="line"><span class="string">&quot;markdown.marp.themes&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;https://example.com/foo/bar/custom-theme.css&quot;</span>,</span><br><span class="line">    <span class="string">&quot;./themes/hust.css&quot;</span></span><br><span class="line">]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>接下来编写自己的css文件，在文件夹中创建一个themes文件夹，创建一个hust.css文件并进行编辑，注意需要在文件头声明这是一个marpit文件，随后CSS文件中需要利用@import导入已有的主题文件，目前Marp官方有default，gaia，uncover三款主题：</p>
+ <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* @theme hust */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@charset</span> <span class="string">&quot;UTF-8&quot;</span>;</span><br><span class="line"><span class="keyword">@import</span> <span class="string">&#x27;gaia&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">section</span> &#123;</span><br><span class="line"><span class="attribute">width</span>: <span class="number">1280px</span>;</span><br><span class="line"><span class="attribute">height</span>: <span class="number">960px</span>;</span><br><span class="line"><span class="attribute">font-size</span>: <span class="number">40px</span>;</span><br><span class="line"><span class="attribute">padding</span>: <span class="number">40px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">h1</span> &#123;</span><br><span class="line"><span class="attribute">font-size</span>: <span class="number">60px</span>;</span><br><span class="line"><span class="attribute">color</span>: <span class="number">#09c</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">h2</span> &#123;</span><br><span class="line"><span class="attribute">font-size</span>: <span class="number">50px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 上面的css文件的解释：每一行文字都被放在了一个h${number}的容器中，可以在css文件中设置这些文字的大小颜色等等。</p>
+<p> 此外，还可以设置页脚等等，建议查阅官方文档了解marpit提供的api并进行调用。</p>
+</li>
+<li><p>一个section定义了全局的设置参数，可以在section设置新的页面设置，在每个页前声明使用哪一种class来对应格式：</p>
+ <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@import</span> <span class="string">&#x27;default&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">section</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&quot;Arial&quot;</span>, <span class="string">&quot;Hiragino Maru Gothic ProN&quot;</span>;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">32px</span>;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">40px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">section</span><span class="selector-class">.title</span> <span class="selector-tag">h1</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: white;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&quot;Arial&quot;</span>, <span class="string">&quot;Hiragino Kaku Gothic ProN&quot;</span>;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">60px</span>;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">section</span><span class="selector-class">.title</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: white;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&quot;Arial&quot;</span>, <span class="string">&quot;Hiragino Maru Gothic ProN&quot;</span>;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">36px</span>;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">40px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">section</span><span class="selector-class">.slides</span> <span class="selector-tag">h1</span> &#123;</span><br><span class="line">    <span class="attribute">background</span>: <span class="built_in">linear-gradient</span>( to left,  <span class="built_in">rgba</span>(<span class="number">69</span>,<span class="number">179</span>,<span class="number">224</span>,<span class="number">1</span>) <span class="number">25%</span>, <span class="built_in">rgb</span>(<span class="number">97</span>, <span class="number">109</span>, <span class="number">218</span>) <span class="number">75%</span> );</span><br><span class="line">    -webkit-<span class="attribute">background-clip</span>: text;</span><br><span class="line">    <span class="attribute">color</span>: transparent;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&quot;Arial&quot;</span>, <span class="string">&quot;Hiragino Kaku Gothic ProN&quot;</span>;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">42px</span>;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50px</span>; <span class="attribute">top</span>: <span class="number">50px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">section</span><span class="selector-class">.slides</span> <span class="selector-tag">h2</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">32px</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#4ac</span>;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">50px</span>; <span class="attribute">top</span>: <span class="number">90px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 只需要在每一张ppt的前面添加：</p>
+ <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">class: title</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br></pre></td></tr></table></figure>
+<p> 就可以自由选择该页的模板。</p>
+</li>
+</ol>
+<h2 id="额外的工具"><a href="#额外的工具" class="headerlink" title="额外的工具"></a>额外的工具</h2><p>单纯的使用markdown+marp并不能很好的满足我们的学术要求，如何把实验数据转换成常见的图表插入到我们的ppt中也成为一个挑战。下面介绍了几个外部工具生成图表。</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://kroki.io/">kroki.io</a>：这是一个开源的渲染引擎，通过对常见的文字符号进行解析生成矢量图。</li>
+<li><a target="_blank" rel="noopener" href="https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio">draw.io</a>：相比于常见的visio等矢量作图软件，drawio是一款轻量级的开源矢量作图软件，支持多种格式导出。</li>
+<li><a target="_blank" rel="noopener" href="https://vega.github.io/vega/">vega.io</a>：是一款很好的数据可视化软件，能够快速做出丰富的数据展示图。</li>
+</ol>
+<h2 id="开源仓库"><a href="#开源仓库" class="headerlink" title="开源仓库"></a>开源仓库</h2><p>我的开源<a target="_blank" rel="noopener" href="https://github.com/yux20000304/hust-theme">仓库地址</a>，欢迎大家使用!</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ol>
+<li><a target="_blank" rel="noopener" href="https://qiita.com/tomo_makes/items/aafae4021986553ae1d8#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%83%86%E3%83%BC%E3%83%9E%E3%82%92%E4%BD%BF%E3%81%86">marp+vscodes使用</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/10/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E5%A4%8D%E4%B9%A0%E6%8F%90%E7%BA%B2/" rel="prev" title="计算机系统设计复习提纲">
+      <i class="fa fa-chevron-left"></i> 计算机系统设计复习提纲
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/01/11/%E5%AD%A6%E4%B9%A0%E7%B4%A2%E5%BC%95%E6%80%A7%E8%83%BD%E6%8E%A2%E7%A9%B6/" rel="next" title="学习索引性能探究">
+      学习索引性能探究 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Marp%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">Marp自定义主题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Marp%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">Marp介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Marp%E7%9A%84%E7%AE%80%E5%8D%95%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">Marp的简单操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%BB%E9%A2%98css%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">如何创建自己的主题css文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%9D%E5%A4%96%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="nav-number">1.4.</span> <span class="nav-text">额外的工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E6%BA%90%E4%BB%93%E5%BA%93"><span class="nav-number">1.5.</span> <span class="nav-text">开源仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.5.1.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">已经混了一年研究生的摆子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yux20000304" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yux20000304" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yuxinyang@hust.edu.cn" title="E-Mail → mailto:yuxinyang@hust.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'e2631b7e4c831f9e25a8',
+      clientSecret: '5ca1a49b2a28ec6f2a80cc9e45ca8243cc839558',
+      repo        : 'blog-comments',
+      owner       : 'yux20000304',
+      admin       : ['yux20000304'],
+      id          : 'f4f6ac7a6dbd01fc7540f82b2e5e71c7',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+
+
+</body>
+</html>
