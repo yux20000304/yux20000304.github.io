@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="osdi’23分离式内存中的ART树设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SMART论文阅读-分离式内存中的art树设计">
+<meta property="og:url" content="http://example.com/2023/08/21/SMART%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-%E5%88%86%E7%A6%BB%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84art%E6%A0%91%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="想学打球的菜鸡">
+<meta property="og:description" content="osdi’23分离式内存中的ART树设计">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-21T02:01:09.000Z">
+<meta property="article:modified_time" content="2025-01-16T05:08:51.000Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/08/21/SMART%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-%E5%88%86%E7%A6%BB%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84art%E6%A0%91%E8%AE%BE%E8%AE%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SMART论文阅读-分离式内存中的art树设计 | 想学打球的菜鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">想学打球的菜鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">资料整理</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a>
+
+  </li>
+        <li class="menu-item menu-item-academic">
+
+    <a href="/academic/" rel="section"><i class="fa fa-user fa-fw"></i>个人主页</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/21/SMART%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-%E5%88%86%E7%A6%BB%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84art%E6%A0%91%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="已经混了一年研究生的摆子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想学打球的菜鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SMART论文阅读-分离式内存中的art树设计
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-21 10:01:09" itemprop="dateCreated datePublished" datetime="2023-08-21T10:01:09+08:00">2023-08-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-16 13:08:51" itemprop="dateModified" datetime="2025-01-16T13:08:51+08:00">2025-01-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>osdi’23分离式内存中的ART树设计</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="论文题目：SMART-A-High-Performance-Adaptive-Radix-Tree-for-Disaggregated-Memory"><a href="#论文题目：SMART-A-High-Performance-Adaptive-Radix-Tree-for-Disaggregated-Memory" class="headerlink" title="论文题目：SMART: A High-Performance Adaptive Radix Tree for Disaggregated Memory"></a>论文题目：SMART: A High-Performance Adaptive Radix Tree for Disaggregated Memory</h2><h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>分离式内存的设计构思是通过把计算节点和内存结点进行池化，通过高速网络（RDMA）进行连接，最终实现数据的高速访问。现有的分离式内存索引结构都是基于b+树开发的，但是b+树会带来读写放大（具体表现为在定位一个键值对时需要层层访问b+树中间节点给计算节点侧）。为了实现本次设计，需要解决三个现有问题：</p>
+<ol>
+<li>已有的基于锁结构的ART树设计不能够在分离式内存中获得很好的性能表现。使用RCU机制会导致频繁的地址修改（主要是在写入操作发生时）。</li>
+<li>在并发访问ART树时，会发生过多的层级节点访问，造成了带宽浪费。</li>
+<li>ART树在计算节点端建立的缓存会很容易发生失效（比如节点的扩容或者缩容导致节点地址发生变化）。</li>
+</ol>
+<h3 id="动机分析"><a href="#动机分析" class="headerlink" title="动机分析"></a>动机分析</h3><p>主要探究了sherman中的b+树的写放大情况。发现art树相比于b+树以及sherman中优化后的b-link树都有更小的读写放大表现。为了实现在分离内存中的ART树索引的构建，需要具体的解决三个问题：</p>
+<ol>
+<li>基于锁控制的ART有着很差的写性能。简单来说，ART树在发生写入操作的时候会产生大量的异地更新操作（原子变量更新带来的）。这会最终导致热数据条目的缓存失效。</li>
+<li>client端有很多冗余的io请求，比如多个客户端同时请求同一个数据条目。</li>
+<li>art树结构变化带来的缓存失效问题。</li>
+</ol>
+<h3 id="SMART设计"><a href="#SMART设计" class="headerlink" title="SMART设计"></a>SMART设计</h3><p>针对动机中提出的三个问题，SMART提出了对应的解决方案：</p>
+<ol>
+<li>上层节点使用了无锁化结构，叶子节点使用了锁结构保证并发。</li>
+<li>提出了RDWC解决冗余io。</li>
+<li>设计了一套缓存方案。</li>
+</ol>
+<ul>
+<li><p>内部结点的无锁化结构实现</p>
+<p>  常见的art树节点通过把部分键和指针分开进行存储，这会导致一定程度上的读放大。通过把部分键嵌入进插槽中来保证发生修改操作的时候能够做到同步修改。内部节点没有使用锁结构</p>
+</li>
+<li><p>叶子结点的锁实现</p>
+<p>  通过一个checksum区域来实现乐观锁机制，主要解决了读写冲突。在写写冲突，使用了一个标记位来保证。</p>
+</li>
+<li><p>RDWC机制</p>
+<p>  类似于乐观锁的设计思路。通过在计算侧维护了一个基于哈希的表结构，通过给多个相同哈希值的key分配一个本地锁。在发生读写请求时，会把对应key的本地锁上锁，如果有其他的请求访问了这个本地锁，首先会检查当前获取锁的key与本次请求的key是否相同，如果不相同就正常发出远程的读写请求给内存侧。</p>
+<ul>
+<li>读委托操作：第一个获取本地锁的读请求所在的客户端会被选举出来作为和远程内存侧通信的客户端，其余的都会被放在等待队列中等待。整个过程更像是第一次缓存失效（获取锁的客户端）以及延迟缓存命中的过程（等待的客户端）。</li>
+<li>写合并操作：在每个计算节点上都建立了一个合并缓冲区。当发生了一个key的写入操作时，首先会添加进入本地缓冲区中，接着执行远程的叶子节点定位操作并进行上锁。当这些操作完成后，才会把整个合并缓冲区对该key进行写入的操作进行合并，通过一次写入操作就可以完成。</li>
+</ul>
+<p>  为了保证写后读的数据正确性以及读写操作的公平性，会让读写请求平等的去竞争本地锁，这样就能够保证读写请求落在了两个没有重叠的时间段中。</p>
+</li>
+<li><p>ART索引cache设计</p>
+<p>  通过在每个计算节点建立一个本地art上层的局部缓存来减少网络开销。</p>
+</li>
+</ul>
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><p>大部分的测试和Sherman比较类似，唯一令人疑惑的点在于范围查询的时候，SMART仅仅是通过增加calue的大小来证明自己的范围查询优势，此外，测试仅仅使用了两台物理节点，不知道是否会对结果产生一定的影响。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/15/f2fs%E6%89%A9%E5%AE%B9%E6%93%8D%E4%BD%9C%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="prev" title="f2fs扩容操作源码解析">
+      <i class="fa fa-chevron-left"></i> f2fs扩容操作源码解析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/12/18/dlsm%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="next" title="dlsm论文阅读">
+      dlsm论文阅读 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E9%A2%98%E7%9B%AE%EF%BC%9ASMART-A-High-Performance-Adaptive-Radix-Tree-for-Disaggregated-Memory"><span class="nav-number">1.</span> <span class="nav-text">论文题目：SMART: A High-Performance Adaptive Radix Tree for Disaggregated Memory</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">动机分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SMART%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.3.</span> <span class="nav-text">SMART设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="nav-number">1.4.</span> <span class="nav-text">测试结果</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">已经混了一年研究生的摆子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yux20000304" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yux20000304" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yuxinyang@hust.edu.cn" title="E-Mail → mailto:yuxinyang@hust.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'e2631b7e4c831f9e25a8',
+      clientSecret: '5ca1a49b2a28ec6f2a80cc9e45ca8243cc839558',
+      repo        : 'blog-comments',
+      owner       : 'yux20000304',
+      admin       : ['yux20000304'],
+      id          : '02205833bf3d38712e775d955c2da737',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+
+
+</body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="f2fs是一款常见的针对NAND介质优化的可读写文件系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="f2fs论文阅读">
+<meta property="og:url" content="http://example.com/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/index.html">
+<meta property="og:site_name" content="想学打球的菜鸡">
+<meta property="og:description" content="f2fs是一款常见的针对NAND介质优化的可读写文件系统">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/1.png">
+<meta property="og:image" content="http://example.com/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/2.png">
+<meta property="og:image" content="http://example.com/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/3.png">
+<meta property="article:published_time" content="2023-07-05T06:37:13.000Z">
+<meta property="article:modified_time" content="2025-01-16T05:08:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/1.png">
+
+<link rel="canonical" href="http://example.com/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>f2fs论文阅读 | 想学打球的菜鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">想学打球的菜鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">资料整理</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a>
+
+  </li>
+        <li class="menu-item menu-item-academic">
+
+    <a href="/academic/" rel="section"><i class="fa fa-user fa-fw"></i>个人主页</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="已经混了一年研究生的摆子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想学打球的菜鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          f2fs论文阅读
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-05 14:37:13" itemprop="dateCreated datePublished" datetime="2023-07-05T14:37:13+08:00">2023-07-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-16 13:08:51" itemprop="dateModified" datetime="2025-01-16T13:08:51+08:00">2025-01-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" itemprop="url" rel="index"><span itemprop="name">论文阅读</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>f2fs是一款常见的针对NAND介质优化的可读写文件系统</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="论文题目-F2FS-A-New-File-System-for-Flash-Storage"><a href="#论文题目-F2FS-A-New-File-System-for-Flash-Storage" class="headerlink" title="论文题目: F2FS: A New File System for Flash Storage"></a>论文题目: F2FS: A New File System for Flash Storage</h2><h3 id="背景介绍以及f2fs概览"><a href="#背景介绍以及f2fs概览" class="headerlink" title="背景介绍以及f2fs概览"></a>背景介绍以及f2fs概览</h3><p>常见的flash设备在写入数据时需要先把数据进行擦除。NAND架构的flash设备由于使用了存储控制器，更支持随机读写操作，因此在很多手机的真实负载场景下有着很好的表现。</p>
+<p>f2fs主要把存储空间分成了六个部分：</p>
+<ol>
+<li>superblock部分（SB）：保存了文件系统的基本分区信息以及一些初始化变量（后续不可修改）</li>
+<li>checkpoint部分（CP）：保存了文件系统状态，bitmap，inode表以及当前处于活动状态的分段入口表。</li>
+<li>段信息表部分（SIT）：包含了有效块的数量和数据区域中所有块的位图。</li>
+<li>节点地址表部分（NAT）：包含了一个块地址表来定位节点块在存储区域的位置。</li>
+<li>段汇总区域部分（SSA）：包含了表示主区域中所有块的所有者信息的摘要条目，例如父节点编号SSA条目会在清理期间迁移有效块之前标识父节点块。</li>
+</ol>
+<p>作者专门通过一个例子向我们揭示了f2fs的工作原理：当我们需要访问&#x2F;dir&#x2F;file路径下的文件，需要分为下面几步：（1）通过读取NAT获取根节点的inode编号以及对应的数据块位置（2）在进入root数据块后，会查询到一个名为dir的文件目录并且获取其inode号（3）会把获取到的inode号输入进NAT中进行查询到一个新的物理块号（4）读取dir文件目录对应的物理块（5）在dir文件块中寻找file的inode号，之后重复3，4中的步骤直到寻找到对应的文件所在的数据块。真实的数据可以从main area中通过文件索引获取。</p>
+<ul>
+<li>文件结构</li>
+</ul>
+<p>原始的LFS文件系统通过一个inode map实现把inode号转换成一个磁盘上的位置。这会导致wandering tree效应，因为LFS的脏数据是追加更新的，所以如果一个数据块变脏了，那么那个数据块的直接索引块（必须要更新，但是是在log尾部进行追加更新）、间接索引块（由于直接索引块被更新，会发生递归的对间接索引块进行追加更新）最终导致递归更新，这也就是我们说的wandering tree效应。</p>
+<img src="/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/1.png" class=""> 
+
+<p>LFS的inode map仅仅只是单纯的保存每个node的inode号以及对应的物理块号，间接索引的访问需要先访问上一级索引的数据块，但是f2fs通过NAT表，间接索引指向的并不是下层数据的数据块地址，而仅仅是NAT表中的一个数据条目，这样就不会发生上述wandering tree问题。在f2fs中只会发生一次数据块的修改以及对应的NAT表项的修改，上层的间接索引指向的仍旧是相同表项。</p>
+<img src="/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/2.png" class="">
+
+<ul>
+<li>文件目录结构</li>
+</ul>
+<p>在f2fs中，一个4KB大小的文件目录项是由一个bitmap以及两个数组（里面包含了插槽以及文件名称的数据对）组成的。每一个插槽都拥有一个哈希值、inode号、文件名长度以及文件类型（普通文件，文件目录，标志链接）这几个信息。每一个文件目录都建立了多层级的哈希表来管理大量的数据条目。当f2fs需要在一个文件目录中查找一个文件名。首先会从第0层遍历整个哈希表，在每一层的遍历过程中，都会扫描包含有2个或者4个数据块的桶，需要O（log（数据块数目））的时间复杂度。</p>
+<ul>
+<li>多起点的日志区域</li>
+</ul>
+<p>不同于LFS文件系统只有一个很大的日志区域，f2fs保持了六个主日志区域来最大程度上进行了冷热数据分离。f2fs针对节点以及数据块定义了三种程度的数据热度：hot，warm以及cold。</p>
+<p>f2fs会把直接的节点块当作更热的数据块（会更新的更加频繁，这个因为直接节点会直接指向文件数据块，因此任何对文件数据的修改操作都会有可能对直接节点产生影响。间接node会指向NAT表中的下一级节点，间接节点只会在某个node发生了删除或者添加后才会被修改），此外针对文件目录的节点块以及对应的节点数据块都被当作是hot的（主要是因为相比于常见的文件数据有着不同的写入流程）。</p>
+<p>对于常见的数据块，如果一旦满足以下三条标准之一就会被当作cold数据：</p>
+<ol>
+<li>被cleaning机制回收的数据块</li>
+<li>被用户标记为cold的数据块</li>
+<li>那些被标记为只进行一次写入或者只读的数据块，f2fs可以通过文件的扩展名去识别这些数据</li>
+</ol>
+<p>f2fs默认是使用了6个日志来处理写入操作（EXT4仅仅使用了一个线程），这样就能够保证多个写入操作能够同时进行。如果开启了6个日志进行写入操作，那么这六个分别对应了表一中的六种情况。如果只开启了4个日志，那么会把cold以及warm进行合并处理，如果只开启了两个日志，那么只会发生一个日志处理data，另外一个处理节点的写入。</p>
+<img src="/2023/07/05/f2fs%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/3.png" class="">
+
+<p>f2fs同时设计了一个configure区域用来和FTL层进行兼容，从而减小垃圾回收的开销。常见的FTL层在数据块以及flash日志块有三种方式（全相联，组相联，块相连）。全相联代表了一个flash日志块用来存储所有数据块的日志，组相联代表了一个flash日志块用来存储一组连续数据的日志，块相连代表了一个flash日志块用来存储单个数据的日志信息。（和组原里面的类似）。常见的FTL层使用了全相联或者是组相联的方法来更好的处理随机写操作。f2fs通过把活动的日志分别映射到不同的区域从而在FTL层就能够避免在并行写入操作时发生对一个块的冲突访问（主要是在全相联以及组相联的情况下，因为会有多个数据块对应一个日志块的情况）。</p>
+<ul>
+<li>cleaning回收机制</li>
+</ul>
+<p>cleaning机制主要是保证了f2fs的垃圾回收管理。f2fs的cleaning的操作是以section为粒度进行的。f2fs的cleaning分为两个独立的操作过程：foreground和background。foreground操作只会在空余section不足的时候才会被触发，在系统内核中会创建一个线程，周期性的在后台执行cleaning操作，一个cleaning操作会被分成三个部分：</p>
+<ol>
+<li>驱逐section选择：首先要选择一个section作为cleaning对象，常见的有两种选择算法，一种是greedy另一种是cost-benefit。贪心算法直接会选择一个拥有最少有效块的section作为驱逐对象。f2fs在foreground选择了这种方式来保证在应用视角获取最少的延迟。此外，f2fs预留了5%的存储空间来保证cleaning过程中较高的空间利用率。cost-benefit准则被background所采用，这个选择准则不仅仅是根据一个section的空间有效率，还根据一个section的使用时间长度来决定，通过对一个section中每一个segment的平均使用长度取平均值来反映一个section的使用时间长度，这也能够帮助f2fs进一步进行冷热数据分类。</li>
+<li>有效块的识别以及迁移：当完成了驱逐块的选择过程后，f2fs需要快速识别出一个section中的有效数据块。这个过程通过SIT(segment information table)中的位图进行识别。一旦完成了识别过程，f2fs就会把有效的数据块迁移到其他的空闲日志中去。对于后台的cleaning操作，f2fs并不会产生实际的IO流进行数据块迁移。f2fs通过把数据块加载到页缓存中并把其标记为dirty。之后f2fs会等着内核的工作线程之后把这些脏数据刷回存储设备中即可。</li>
+<li>当所有的有效数据块被迁移了之后，该section就会被标记为空闲空间。在检查点被建立之前，这个section还不能够被分配，这是因为一旦发生崩溃，无法通过上一检查点来恢复数据。</li>
+</ol>
+<ul>
+<li>动态日志机制</li>
+</ul>
+<p>原本的日志文件系统使用了两种日志模式：普通日志模式和线程日志模式。在普通日志模式下，通过写入块数据来对segment进行清理并且严格遵循顺序写原则。即使用户提交了很多个随机写请求，这个过程会把这些请求转换成顺序写。一旦没有足够的空间，这种方式就会产生大量的cleaning操作开销。线程日志模式会向已有的segment中的invalid block中写入数据，但是这种随机写的操作会在一定程度上影响性能。f2fs同时使用了这两种模式，并且会根据文件系统的状态进行动态切换。具体来说，如果当前的文件系统中有k个空闲的section，那么就会优先使用普通日志模式，否则就会切换到线程日志模式。（值得注意的是闪存设备对于线程日志模式的随机写操作很适合，有着极高的性能表现）</p>
+<ul>
+<li>检查点机制以及恢复机制</li>
+</ul>
+<p>检查点机制主要分为以下几个步骤：</p>
+<ol>
+<li>所有的脏节点以及dentry节点都会被从页缓存中flush到底层存储设备中。</li>
+<li>停止所有常见的操作如：create、unlink等等</li>
+<li>所有的文件系统元数据都会被写入到专用的磁盘区域中</li>
+<li>f2fs会创建一个检查点，具体包括了：<ul>
+<li>header和footer，会在创建检查点的同时设置对应的版本号。</li>
+<li>NAT和SIT的位图信息</li>
+<li>NAT和SIT的日志</li>
+<li>孤儿数据块（笑），如果发生了一个inode在被关闭之前就被删除了（两个进程打开了同一个文件，但是只有一个进程删除了该文件），该inode节点就会被标记为孤儿节点。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>前滚恢复机制</li>
+</ul>
+<p>f2fs使用了一个向前滚机制来进行普通文件数据恢复。前滚恢复则在后滚恢复的基础上进行优化，在写入普通文件时，很多时候只需要对特定文件进行一致性操作，而系统中的其他数据则不关注，如果每次都写入一次Checkpoint，未免太过耗时。所以在写入普通文件时，只需要确保该文件的管理数据落盘即可，并通过特殊的标记，记录其状态，在恢复流程中，根据写入的数据可以恢复到掉电前的状态。</p>
+<h2 id="实验部分"><a href="#实验部分" class="headerlink" title="实验部分"></a>实验部分</h2><h3 id="使用qemu配合gdb完成对f2fs的调试"><a href="#使用qemu配合gdb完成对f2fs的调试" class="headerlink" title="使用qemu配合gdb完成对f2fs的调试"></a>使用qemu配合gdb完成对f2fs的调试</h3><ol>
+<li>首先下载linux内核源码以及busybox源码<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">下载内核</span></span><br><span class="line">wget https://mirrors.edge.kernel.org/pub/linux/kernel/v5.x/linux-5.10.163.tar.gz</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">下载busybox</span></span><br><span class="line">git clone https://github.com/mirror/busybox.git</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编译busybox</span></span><br><span class="line">export ARCH=arm</span><br><span class="line">export CROSS_COMPILE=arm-linux-gnuabi-</span><br><span class="line">make menuconfig</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">修改设置</span></span><br><span class="line">Busybox Settings ---&gt;</span><br><span class="line">	Build Options ---&gt;</span><br><span class="line">		[*] Build BusyBox as a static binary (no shared libs)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">完成编译</span></span><br><span class="line">make install</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">把busybox中生成的_install目录拷贝到linux解压后的目录中</span></span><br><span class="line">sudo mkdir etc</span><br><span class="line">sudo mkdir dev</span><br><span class="line">sudo mkdir mnt</span><br><span class="line">sudo mkdir –p etc/init.d/</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在_install /etc/init.d/目录下创建rcS文件，写入如下内容</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/sh</span></span><br><span class="line">mkdir –p /proc</span><br><span class="line">mkdir –p /tmp</span><br><span class="line">mkdir -p /sys</span><br><span class="line">mkdir –p /mnt</span><br><span class="line">/bin/mount -a</span><br><span class="line">mkdir -p /dev/pts</span><br><span class="line">mount -t devpts devpts /dev/pts</span><br><span class="line">echo /sbin/mdev &gt; /proc/sys/kernel/hotplug</span><br><span class="line">mdev –s</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">给rcS最高权限</span></span><br><span class="line">sudo chmod 777 rcS</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在 _install的etc目录下创建fstab文件并写入如下内容</span></span><br><span class="line">proc /proc proc defaults 0 0</span><br><span class="line">tmpfs /tmp tmpfs defaults 0 0</span><br><span class="line">sysfs /sys sysfs defaults 0 0</span><br><span class="line">tmpfs /dev tmpfs defaults 0 0</span><br><span class="line">debugfs /sys/kernel/debug debugfs defaults 0 0</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在_install /etc目录下创建inittab文件并写入如下内容：</span></span><br><span class="line">::sysinit:/etc/init.d/rcS</span><br><span class="line">::respawn:-/bin/sh</span><br><span class="line">::askfirst:-/bin/sh</span><br><span class="line">::ctrlaltdel:/bin/umount -a -r</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在_install dev目录下创建设备节点</span></span><br><span class="line">sudo mknod console c 5 1</span><br><span class="line">sudo mknod null c 1 3</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>首先是进入linux源码目录，然后通过menuconfig配置qemu运行参数:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">export</span> ARCH=arm</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">export</span> CROSS_COMPILE= arm-linux-gnueabi-</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">export</span> make vexpress_defconfig</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">make menuconfig</span></span><br></pre></td></tr></table></figure>
+<p>进入menuconfig界面以后，修改几个内核选项:<br>第一个是修改initramfs的位置，即<code>_install</code>目录，这样系统就会将<code>_install</code>目录作为启动的根目录，还需要把boot option的command string清空。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">General setup ---&gt;</span><br><span class="line">	<span class="selector-attr">[*]</span> Initial RAM filesystem and RAM Disk (initramfs/initrd) support</span><br><span class="line">		(_install) Initramfs source <span class="built_in">file</span>(s)</span><br><span class="line">Boot options --&gt;</span><br><span class="line">	()Default kernel command string</span><br></pre></td></tr></table></figure>
+<p>第二个选项是内存选项，配置 memory split 为“3G&#x2F;1G user&#x2F;kernel split”以及打开高端内存。</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Kernel Features ---&gt;</span><br><span class="line">	Memory <span class="built_in">split</span> (<span class="number">3</span>G/<span class="number">1</span>G user/kernel <span class="built_in">split</span>) ---&gt;</span><br><span class="line">	[ *] High Memory Support</span><br></pre></td></tr></table></figure>
+<p>然后就可以开始编译内核:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make bzImage –j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabi-</span><br><span class="line">make dtbs</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>F2FS工具的准备<br>主要使用到用于格式化的mkfs.f2fs工具，ubuntu下可以执行以下命令进行安装<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install f2fs-tools</span><br></pre></td></tr></table></figure></li>
+<li>编译可运行F2FS的内核<br>经过上述步骤的编译，会在Linux的根目录生成一个<code>.config</code>文件，打开这个文件，找到以下的内核选项，并设置为y。<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">CONFIG_F2FS_FS</span>=y</span><br><span class="line"><span class="attr">CONFIG_F2FS_STAT_FS</span>=y</span><br><span class="line"><span class="attr">CONFIG_F2FS_FS_XATTR</span>=y</span><br><span class="line"><span class="attr">CONFIG_F2FS_FS_POSIX_ACL</span>=y</span><br><span class="line"></span><br><span class="line"><span class="comment"># gdb调试信息</span></span><br><span class="line"><span class="attr">CONFIG_GDB_SCRIPTS</span>=y</span><br><span class="line"></span><br><span class="line"><span class="comment"># debug信息</span></span><br><span class="line"><span class="attr">CONFIG_DEBUG_INFO</span>=y</span><br><span class="line"></span><br><span class="line"><span class="comment"># 要先把performance那个选项关了再开这个保证Os编译优化</span></span><br><span class="line"><span class="attr">CONFIG_CC_OPTIMIZE_FOR_SIZE</span>=y</span><br></pre></td></tr></table></figure>
+<strong>记得要打开gdb调试的内核编译选项以及把编译优化参数设置为Os否则会有很多变量被优化掉</strong><br>然后重新编译<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make bzImage –j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabi-</span><br><span class="line">make dtbs</span><br></pre></td></tr></table></figure>
+编译结束后，创建一个文件作为F2FS的磁盘空间<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dd if=/dev/zero of=a9rootfs.f2fs bs=1M count=250 # 创建250MB的F2FS空间</span><br><span class="line">mkfs.f2fs a9rootfs.f2fs #使用F2FS格式化工具进行格式化</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>接下来，通过执行如下命令启动Qemu虚拟机，需要使用-sd选项将刚刚创建的作为F2FS磁盘空间的文件挂载到系统中:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-arm  \</span><br><span class="line">        -M vexpress-a9 \</span><br><span class="line">        -m 512M \</span><br><span class="line">        -kernel /home/xxx/kernels/linux4/linux-4.18/arch/arm/boot/zImage \</span><br><span class="line">        -dtb /home/xxx/kernels/linux4/linux-4.18/arch/arm/boot/dts/vexpress-v2p-ca9.dtb \</span><br><span class="line">        -nographic \</span><br><span class="line">        -append &quot;rdinit=/linuxrc console=ttyAMA0 loglevel=8&quot; \</span><br><span class="line">        -sd a9rootfs.f2fs \</span><br><span class="line">        -s \</span><br><span class="line">        -S</span><br></pre></td></tr></table></figure>
+
+<p>最后，Qemu完成启动之后，在Qemu的linux系统执行如下命令将F2FS挂载到linux中:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t f2fs /dev/mmcblk0 /mnt/ -o loop</span><br></pre></td></tr></table></figure>
+
+<p>最终使用vscode打开该项目，创建.vscode目录并设置launch.json文件</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="comment">// Use IntelliSense to learn about possible attributes.</span></span><br><span class="line">    <span class="comment">// Hover to view descriptions of existing attributes.</span></span><br><span class="line">    <span class="comment">// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387</span></span><br><span class="line">    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;configurations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;kernel debug&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cppdbg&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="string">&quot;launch&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;program&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;/vmlinux&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;$&#123;workspaceFolder&#125;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;MIMode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gdb&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;miDebuggerPath&quot;</span><span class="punctuation">:</span><span class="string">&quot;/usr/bin/gdb-multiarch&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;miDebuggerServerAddress&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost:1234&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>之后就可以在vscode中打断点查看调试信息了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/02/21/%E7%B4%A2%E5%BC%95%E5%B9%B6%E5%8F%91%E8%AE%BE%E8%AE%A1%E7%A0%94%E7%A9%B6/" rel="prev" title="索引并发设计研究">
+      <i class="fa fa-chevron-left"></i> 索引并发设计研究
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/08/15/f2fs%E6%89%A9%E5%AE%B9%E6%93%8D%E4%BD%9C%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="next" title="f2fs扩容操作源码解析">
+      f2fs扩容操作源码解析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E9%A2%98%E7%9B%AE-F2FS-A-New-File-System-for-Flash-Storage"><span class="nav-number">1.</span> <span class="nav-text">论文题目: F2FS: A New File System for Flash Storage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D%E4%BB%A5%E5%8F%8Af2fs%E6%A6%82%E8%A7%88"><span class="nav-number">1.1.</span> <span class="nav-text">背景介绍以及f2fs概览</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E9%83%A8%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">实验部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8qemu%E9%85%8D%E5%90%88gdb%E5%AE%8C%E6%88%90%E5%AF%B9f2fs%E7%9A%84%E8%B0%83%E8%AF%95"><span class="nav-number">2.1.</span> <span class="nav-text">使用qemu配合gdb完成对f2fs的调试</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">已经混了一年研究生的摆子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yux20000304" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yux20000304" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yuxinyang@hust.edu.cn" title="E-Mail → mailto:yuxinyang@hust.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'e2631b7e4c831f9e25a8',
+      clientSecret: '5ca1a49b2a28ec6f2a80cc9e45ca8243cc839558',
+      repo        : 'blog-comments',
+      owner       : 'yux20000304',
+      admin       : ['yux20000304'],
+      id          : '7c6ec2f9e19d0551ab9188bd17b48774',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+
+
+</body>
+</html>

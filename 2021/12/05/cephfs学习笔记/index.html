@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Cephfs学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cephfs学习笔记">
+<meta property="og:url" content="http://example.com/2021/12/05/cephfs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="想学打球的菜鸡">
+<meta property="og:description" content="Cephfs学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/12/05/cephfs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1.png">
+<meta property="og:image" content="http://example.com/2021/12/05/cephfs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2.png">
+<meta property="article:published_time" content="2021-12-05T09:22:20.000Z">
+<meta property="article:modified_time" content="2025-01-16T05:08:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/12/05/cephfs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1.png">
+
+<link rel="canonical" href="http://example.com/2021/12/05/cephfs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>cephfs学习笔记 | 想学打球的菜鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">想学打球的菜鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">资料整理</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a>
+
+  </li>
+        <li class="menu-item menu-item-academic">
+
+    <a href="/academic/" rel="section"><i class="fa fa-user fa-fw"></i>个人主页</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/05/cephfs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="已经混了一年研究生的摆子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想学打球的菜鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          cephfs学习笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-05 17:22:20" itemprop="dateCreated datePublished" datetime="2021-12-05T17:22:20+08:00">2021-12-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-16 13:08:51" itemprop="dateModified" datetime="2025-01-16T13:08:51+08:00">2025-01-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%B0%83%E7%A0%94-%E6%80%9D%E8%80%83/" itemprop="url" rel="index"><span itemprop="name">调研&思考</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>Cephfs学习笔记</li>
+</ul>
+<span id="more"></span>
+<h2 id="什么是Cephfs"><a href="#什么是Cephfs" class="headerlink" title="什么是Cephfs"></a>什么是Cephfs</h2><ul>
+<li>Cephfs所在的位置<ul>
+<li>下面给出了文件系统存储区别于块存储的结构区别<img src="/2021/12/05/cephfs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1.png" class=""><br>用户可以在块设备上创建xfs文件系统，也可以创建ext4等其他文件系统。如上图，Ceph集群实现了自己的文件系统来组织管理集群的存储空间，用户可以直接将Ceph集群的文件系统挂载到用户机上使用。</li>
+</ul>
+</li>
+<li>Cephfs存储方式的优势<ul>
+<li>之前介绍了cephfs相比于使用rbd的块存储方式的区别，相比于rbd块存储，cephfs对于共享性有着更好的支持 <img src="/2021/12/05/cephfs%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2.png" class="">  </li>
+<li>对于Ceph的文件系统接口，如上图，文件系统的结构状态是维护在远端Ceph集群中的，Ceph文件系统同时挂载到了用户机1和用户机2，当往用户机1的挂载点写入数据后，远端Ceph集群中的文件系统状态结构随之更新，当从用户机2的挂载点访问数据时会去远端Ceph集群取数据，由于远端Ceph集群已更新，所有用户机2能够获取最新的数据。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Cephfs的mds"><a href="#Cephfs的mds" class="headerlink" title="Cephfs的mds"></a>Cephfs的mds</h2><ul>
+<li><p>mds状态<br>mds在ceph系统正常运行时会有几种状态，下面介绍这几种常见的状态：</p>
+<ul>
+<li>up:activate<br>这个状态代表了现在的mds处在工作状态并且正在被文件系统使用</li>
+<li>up:standby<br>这个状态代表了现在的mds处在灾备状态但是作为备用的mds</li>
+<li>up:standby_replay<br>当一个up:activate的节点发生了fail，有一个standby_replay的mds节点replay实时日志，这样它就有元数据的热缓存，在负责这个 rank 的守护进程失效时，会帮助standby节点更快的接管activate节点。注意到这个状态的mds节点不能用来接管任何一个发生fail的activate节点，只能记录它对应activate的mds节点。一个rank只能够有一个standby_replay节点。</li>
+</ul>
+<p>以下的状态基本上是不常见的或者是中间状态：  </p>
+<ul>
+<li>up:boot<br>这个状态基本上是不可见的，因为monitor会很快就把MDS设置为对应的状态</li>
+<li>up:creating<br>这个状态表示mds正在构建一些pre-rank元数据并且进入mds集群来创建一个新的rank</li>
+<li>up:starting<br>这个状态表示了mds正在重启一个被停止了的rank，这会打开关联的per-rank元数据并进入mds集群</li>
+<li>up:stopping<br>当一个rank被停止，monitor会指挥activate状态的目的是节点进入up:stopping状态。这个状态mds不会接受任何新的客户端连接请求，把所有的子树迁移到其他的rank中去，清空自己的元数据日志，如果是自己是rank0，就会直接中断所有的客户端连接并关机。</li>
+<li>up:replay<br>这个状态代表现在的mds正在接管fail的节点，修复日志和元数据  </li>
+<li>up:resolve<br>mds在up:replay状态时由于cephfs有多种ranks才进入这种状态，这个mds会处理所有没有提交的MDS间操作。文件系统之中必须所有的等级都处于这个状态才能继续操作。如果发生no rank可能会发生fail从而导致up:replay  </li>
+<li>up:reconnect<br>MDS 从up:replay或进入此状态up:resolve。此状态是请求来自客户端的重新连接。任何与 thisrank 有会话的客户端都必须在此期间重新连接，可通过mds_reconnect_timeout.</li>
+<li>up:rejoin<br>MDS 从up:reconnect进入此状态。在这种状态下，MDS 正在重新加入 MDS 集群缓存。特别是，重新建立元数据上的所有 MDS 间锁定。如果没有已知的客户端请求被重放，MDS 直接从这个状态变为up:active。</li>
+</ul>
+</li>
+<li><p>mds主从切换流程</p>
+<ol>
+<li>用户手动发起主从切换fail。</li>
+<li>active mds手动信号，发起respawn重启。</li>
+<li>standby mds收到信号，经过分布式算法推选为新主active mds。</li>
+<li>新主active mds 从up:boot状态，变成up:replay状态。日志恢复阶段，他将日内容读入内存后，在内存中进行回放操作。</li>
+<li>新主active mds 从up:replay状态，变成up:reconnect状态。恢复的mds需要与之前的客户端重新建立连接，并且需要查询之前客户端发布的文件句柄，重新在mds的缓存中创建一致性功能和锁的状态。</li>
+<li>新主active mds从up:reconnect状态，变成up:rejoin状态。把客户端的inode加载到mds cache。(耗时最多的地方)</li>
+<li>新主active mds从up:rejoin状态，变成up:active状态。mds状态变成正常可用的状态。</li>
+<li>recovery_done 迁移完毕。</li>
+<li>active_start 正常可用状态启动，mdcache加载相应的信息</li>
+</ol>
+</li>
+<li><p>mds核心组件分析</p>
+<ul>
+<li>MDSDaemon（MDS守护线程）<ol>
+<li>Beacon：是mds向monitor的心跳组件，如果mds发送的心跳信号没有从monitor端收到回应，就说明网络通信出现了问题，mds会建立一个消息队列等待所有消息被处理</li>
+<li>Messenger：mds的网络通信组件</li>
+<li>MonClient：连接monitor的组件</li>
+<li>MDSMap：用来处理MDSMap的组件</li>
+<li>Objecter：连接osd的组件</li>
+<li>MDSRank：MDS的核心组件</li>
+<li>MDSRankDispatcher：mds的核心组件</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><p>mds源码分析</p>
+<blockquote>
+<p>ceph_mds.cc</p>
+</blockquote>
+<ul>
+<li>该文件位于&#x2F;src目录下，里面的main函数包括了mds的工作流程<ol>
+<li>首先创建守护进程，创建一个messenger实例来处理消息，绑定需要连接的client的地址和端口号。</li>
+<li>获取monitor map， 启动mds，messenger消息队列等待，当mds彻底关闭之后消息队列关闭<blockquote>
+<p>MDSDaemon.h &amp;&amp; MDSDaemon.cc</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>该文件位于&#x2F;src&#x2F;mds目录下，里面包括了mds守护进程怎么启动以及mds怎么从一个standby状态被分配到mds集群中<ul>
+<li><code> int MDSDaemon::init()</code>：这个函数包括了初始化Monclient，初始化mgrclient，初始化SaftTimer，初始化Beacon，重置tick等等</li>
+<li><code> bool MDSDaemon::ms_dispatch(Message *m)</code>：这个函数专门用来处理各种消息。如果mds处于shutdown状态，不处理消息，优先处理daemon message，如果发现不是核心态消息，重新给rank发送消息</li>
+<li><code> bool MDSDaemon::handle_core_message(Message *m)</code>：这个函数会被ms_dispatch调用，用来具体处理高优先级的消息（从MON,MDS,OSD发来的消息）</li>
+<li><code> void MDSDaemon::ms_handle_accept(Connection *con)</code>：连接上accept。  </li>
+<li><code>void handle_mds_map(const cref_t&lt;MMDSMap&gt; &amp;m); </code>：每一个standby状态下的mds会等待monitors分配一个在mds集群中的位置，这里实现的过程就是mds会监听并等待接受一个新的mds map，这个函数包括怎么接受一个core message的mds map以及解码一系列操作。最后还会有一系列关于mds状态切换的代码<blockquote>
+<p>MDSRank.h &amp;&amp; MDSRank.cc</p>
+</blockquote>
+</li>
+<li>概念补充：rank是元数据工作负载在多个 MDS ( ceph-mds ) 守护进程之间共享的方式。ranks是一次可能处于活动状态的 MDS 守护进程的最大数量。每个 MDS 处理分配给该等级的文件系统元数据的子集。每个 MDS 守护进程最初都没有等级。  </li>
+<li><code>void MDSRankDispatcher::init()</code>：初始化，从配置文件中读取log配置以及更新log配置，并创建log。处最后创建progressthread进程。</li>
+<li><code>void MDSRankDispatcher::tick()</code> ：重置heartbeat超时时间，防止因为超时被monitor kill，flush所有的log，唤醒progress_thread进程，根据mdsmap的状态，如果是active或者是stopping状态就周期性，清空cache,client_lease,log等信息，如果是reconnect，replay等状态也调用对应的方法。</li>
+<li><code>void MDSRankDispatcher::shutdown()</code>：关闭定时器，MDSlog，finisher，mdcache，objecter，monclient回调op_tracker的shutdown回调函数，关闭messenger</li>
+<li><code>bool MDSRank::_dispatch(const cref_t&lt;Message&gt; &amp;m, bool new_msg)</code>：专门用来处理laggy状态<blockquote>
+<p>FSMap.h &amp;&amp; FSMap.cc</p>
+</blockquote>
+</li>
+<li>fsmap类是一个mdsmap类的集合，里面有三个成员：<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fs_cluster_id_t fscid <span class="operator">=</span> FS_CLUSTER_ID_NONE<span class="comment">;</span></span><br><span class="line">MDSMap mds_map<span class="comment">;</span></span><br><span class="line">MirrorInfo mirror_info<span class="comment">;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/02/ceph-mds/" rel="prev" title="ceph mds">
+      <i class="fa fa-chevron-left"></i> ceph mds
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/12/05/cephfs%E6%BA%90%E7%A0%81%E8%B0%83%E8%AF%95/" rel="next" title="cephfs源码调试">
+      cephfs源码调试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFCephfs"><span class="nav-number">1.</span> <span class="nav-text">什么是Cephfs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cephfs%E7%9A%84mds"><span class="nav-number">2.</span> <span class="nav-text">Cephfs的mds</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">已经混了一年研究生的摆子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yux20000304" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yux20000304" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yuxinyang@hust.edu.cn" title="E-Mail → mailto:yuxinyang@hust.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'e2631b7e4c831f9e25a8',
+      clientSecret: '5ca1a49b2a28ec6f2a80cc9e45ca8243cc839558',
+      repo        : 'blog-comments',
+      owner       : 'yux20000304',
+      admin       : ['yux20000304'],
+      id          : '6e6753b7bfdd66fe180303546ab75d52',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+
+
+</body>
+</html>

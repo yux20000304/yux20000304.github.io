@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="PMDK（Persistent Memory Development Kit）组件学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pmdk组件学习">
+<meta property="og:url" content="http://example.com/2021/12/13/pmdk%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="想学打球的菜鸡">
+<meta property="og:description" content="PMDK（Persistent Memory Development Kit）组件学习">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-12-13T08:09:03.000Z">
+<meta property="article:modified_time" content="2025-01-16T05:08:51.000Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2021/12/13/pmdk%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>pmdk组件学习 | 想学打球的菜鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">想学打球的菜鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">资料整理</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a>
+
+  </li>
+        <li class="menu-item menu-item-academic">
+
+    <a href="/academic/" rel="section"><i class="fa fa-user fa-fw"></i>个人主页</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/13/pmdk%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="已经混了一年研究生的摆子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想学打球的菜鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pmdk组件学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-12-13 16:09:03" itemprop="dateCreated datePublished" datetime="2021-12-13T16:09:03+08:00">2021-12-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-16 13:08:51" itemprop="dateModified" datetime="2025-01-16T13:08:51+08:00">2025-01-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B7%A5%E5%85%B7%E6%95%B4%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">工具整理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li>PMDK（Persistent Memory Development Kit）组件学习<span id="more"></span></li>
+</ul>
+<h2 id="PMDK-简介"><a href="#PMDK-简介" class="headerlink" title="PMDK 简介"></a>PMDK 简介</h2><p>PMDK 的全称是 Persistent Memory Development Kit，它包含了 Intel 开发的一系列旨在 方便非易失性内存的应用开发的函数库和工具。PMDK 是一个还在快速发展变化的新鲜事物，不过版本的迭代更新等很多信息都可以公开看到。需要注意的是，PMDK 的网站入口 和 Git 仓库的入口不是严格的一一对应关系。</p>
+<p>实际上，PMDK的Git仓库中包含了libpmem、libvmem、libpmemblk、libpmemlog、libpmemobj、libpmempool、libvmmalloc 等很多函数库。还有很多函数库和工具分散在其他的一些Git仓库中，例如我们下面要介绍的libpmemkind、libvmemcache、libpmemkv以及支持C&#x2F;C++、Java、Python等语言的绑定。</p>
+<h2 id="PMDK的典型应用场景"><a href="#PMDK的典型应用场景" class="headerlink" title="PMDK的典型应用场景"></a>PMDK的典型应用场景</h2><ul>
+<li>把DRAM和PM一起当作内存使用</li>
+<li>把DRAM和PM当作两层不同的内存使用（libmemkind）</li>
+<li>把PM当作对象缓存使用（libvmemcache）</li>
+<li>把PM当作持久性KV存储使用（libpmemkv）<ul>
+<li>这个库也是我打算以后用来实现数据缓存部分需要的，还需要花一定时间去了解。</li>
+</ul>
+</li>
+<li>把PM当做事务性对象存储使用（libpmemobj）</li>
+</ul>
+<h2 id="有没有好的项目推荐？"><a href="#有没有好的项目推荐？" class="headerlink" title="有没有好的项目推荐？"></a>有没有好的项目推荐？</h2><ul>
+<li><p>看了一堆材料之后发现自己还是没有什么想法，主要是什么知识都不知道，终于找到了阿里的一个数据库比赛，专门针对可持续性内存进行的一个kv数据库的实现，于是想到可以先学习一下他们的设计思路，再做出自己的创新。  </p>
+</li>
+<li><p>这里专门附上<a target="_blank" rel="noopener" href="https://www.aliyun.com/search?scene=all&k=tair">比赛链接</a>，为了进一步了解如何进行PM的编程，我开始学习大赛的官方学习文档：</p>
+<h4 id="PMEM编程指南"><a href="#PMEM编程指南" class="headerlink" title="PMEM编程指南"></a>PMEM编程指南</h4><p>  小白是个普通大学生，但是他有幸得到了一块AEP，他决定把之前写的学生管理系统搬到AEP上来</p>
+<p>  首先我们假设有如下的结构体</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Student</span> &#123;</span></span><br><span class="line">    <span class="type">char</span> name[<span class="number">16</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>  那么接下来我们想要构造一个新的学生，如果介质是普通的内存，我们自然会写出这样的代码</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> Student* <span class="title function_">new_student</span><span class="params">(<span class="type">char</span>* name)</span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Student</span>* <span class="title">stu</span> =</span> (<span class="keyword">struct</span> Student*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> Student));</span><br><span class="line">    <span class="built_in">strcpy</span>(stu-&gt;name, name);</span><br><span class="line">    <span class="keyword">return</span> stu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  但是如果在持久型存储上，上面的代码结果是不确定的。因为程序会crash，机器也可能掉电关机，这些导致程序非正常退出的因素都可能导致上述的数据写入出现不一致的状态。如果程序在调用strcpy前失败，我们还可以通过学生名为空发现这不是一个合理的学生（假定之前整块AEP为空），但是如果strcpy执行中失败，Alicebobby同学可能在重启之后成为了Alice同学。</p>
+<p>  为了解决这个问题，我们会想到添加一些字段来进行校验。这是改进后的结构体。</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Student</span> &#123;</span></span><br><span class="line">    <span class="type">char</span> name[<span class="number">16</span>];</span><br><span class="line">    <span class="type">uint16_t</span> length;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>  这时我们会这样构造对象</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> Student* <span class="title function_">new_student</span><span class="params">(<span class="type">char</span>* name)</span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Student</span>* <span class="title">stu</span> =</span> (<span class="keyword">struct</span> Student*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> Student));</span><br><span class="line">    <span class="type">uint16_t</span> len = <span class="built_in">strlen</span>(name);</span><br><span class="line">    stu-&gt;length = len;</span><br><span class="line">    <span class="built_in">strcpy</span>(stu-&gt;name, name);</span><br><span class="line">    <span class="keyword">return</span> stu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  我们就可以在重启后通过对比length与实际写入的长度来确认这个对象的构造是否正确（假定语句总是顺序执行的）。但是，cpu的缓存机制也可能产生特殊的影响。</p>
+<p>  我们继续假定有这样的结构体与更新操作</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Students</span>&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Student</span>* <span class="title">student</span>[<span class="title">MAX_STUDENT_CNT</span>];</span></span><br><span class="line">    <span class="type">uint32_t</span> student_cnt;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">push_back</span><span class="params">(<span class="keyword">struct</span> Students* students, <span class="type">char</span>* name)</span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Student</span>* <span class="title">stu</span> =</span> new_student(name);</span><br><span class="line">    student[student] = stu;</span><br><span class="line">    student_cnt++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  首先，数据开始的时候被存储在cpu的多级cache中，在通常的策略下，cpu并不会在每次有更新时就将脏数据写回，这在进行持久化内存编程时产生了很大的影响，在不使用特殊手段的情况下，我们很难预测cpu将哪一部分cache写回了。因此，理论上如果此时系统掉电，那么将会出现cache中的数据丢失的现象，对应到这个场景，则是我们可能得到这样的数据</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">students:</span><br><span class="line">    student: &#123;<span class="literal">NULL</span>, <span class="literal">NULL</span>,<span class="literal">NULL</span>...&#125;,</span><br><span class="line">    student_cnt: <span class="number">1</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>  我们可以注意到，虽然我们的student字段是最先赋值的，但是cpu将这部分所属的cache选择在最后写回，实际写入的学生数和记录中的学生数对不上了。这是我们所不想见到的。</p>
+<p>  为了回避这些问题，我们需要了解这样几个指令，分别是flush系的CLFLUSH、CLFLUSHOPT和CLWB，以及SFENCE。</p>
+<p>  CLFLUSH会命令cpu将对应cacheline逐出，强制性的写回介质，这在一定程度上可以解决我们的问题，但是这是一个同步指令，将会阻塞流水线，损失了一定的运行速度，于是Intel添加了新的指令CLFLUSHOPT和CLWB，这是两个异步的指令。尽管都能写回介质，区别在前者会清空cacheline，后者则会保留，这使得在大部分场景下CLWB可能有更高的性能。</p>
+<p>  但是事情没有那么简单，异步的代价是我们对于cache下刷的顺序依旧不可预测，对应到这个场景就是name依然可能先于length下刷，于是我们需要使用SFENCE提供保证，SFENCE强制sfence指令前的写操作必须在sfence指令后的写操作前完成。</p>
+<p>  除此之外，8byte的写入操作本身也是原子的。</p>
+<p>  cache的问题解决的差不多了。但是除了cache，编译器的优化策略与cpu的乱序执行也可能产生类似的效果。</p>
+<p>  因此Intel提供了PMDK，在PMDK中的libpmem中提供了这样一些API，用以处理所有可能产生影响的情况。</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">pmem_flush</span><span class="params">(<span class="type">const</span> <span class="type">void</span> *addr, <span class="type">size_t</span> len)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">pmem_drain</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">pmem_persist</span><span class="params">(<span class="type">const</span> <span class="type">void</span> *addr, <span class="type">size_t</span> len)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>  <code>pmem_flush</code>即是之前所说的flush系指令的封装，只不过libpmem会在装载时获取相关信息自动选择最优的指令，而<code>pmem_drain</code>则是对sfence的封装。至于<code>pmem_persist</code>，仅仅只是连续调用了<code>pmem_flush</code>和<code>pmem_drain</code>。考虑到<code>pmem_drain</code>可能会阻塞一些操作，更好的做法是对数据结构里互不相干的几个字段分别flush，最后一并调用<code>pmem_drain</code>，以将阻塞带来的问题降到最低。</p>
+<p>  用上面几个API来补全这个例子，就是</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">push_back</span><span class="params">(<span class="keyword">struct</span> Students* students, <span class="type">char</span>* name)</span> &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Student</span>* <span class="title">stu</span> =</span> new_student(name); <span class="comment">// you also need to make this function persist</span></span><br><span class="line">    student[student] = stu;</span><br><span class="line">    pmem_persist(&amp;student[student], <span class="keyword">sizeof</span>(<span class="keyword">struct</span> Student*));</span><br><span class="line">    <span class="comment">// or</span></span><br><span class="line">    <span class="comment">// pmem_flush(&amp;student[student], sizeof(struct Student*));</span></span><br><span class="line">    <span class="comment">// pmem_drain();</span></span><br><span class="line">    student_cnt++;</span><br><span class="line">    pmem_persist(&amp;student_cnt, <span class="keyword">sizeof</span>(student_cnt));</span><br><span class="line">    <span class="comment">// the same</span></span><br><span class="line">    <span class="comment">// pmem_flush(&amp;student_cnt, sizeof(student_cnt));</span></span><br><span class="line">    <span class="comment">// pmem_drain();</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  再举一个例子好了，我们可能会想要以链表形式组织数据，那么</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">StudentNode</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Student</span>* <span class="title">stu</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">StudentNode</span>* <span class="title">next</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">void</span> <span class="title function_">insert</span><span class="params">(<span class="keyword">struct</span> StudentNode** head, <span class="keyword">struct</span> StudentNode* new_stu)</span> &#123;</span><br><span class="line">    new_stu-&gt;next = *head;</span><br><span class="line">    *head = new_stu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  看出问题了吗？同样的，head很有可能先于next写回AEP，在这种情况下发生断电我们就会丢失整条链表的大部分信息。因此，我们也需要手动处理持久化。</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">insert</span><span class="params">(<span class="keyword">struct</span> StudentNode** head, <span class="keyword">struct</span> StudentNode* new_stu)</span> &#123;</span><br><span class="line">    new_stu-&gt;next = *head;</span><br><span class="line">    pmem_persist(&amp;new_stu-&gt;next, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> StudentNode*));</span><br><span class="line">    *head = new_stu;</span><br><span class="line">    pmem_persist(*head, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> StudentNode*));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  最后则是libpmem里的几个API</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> *<span class="title function_">pmem_memmove_persist</span><span class="params">(<span class="type">void</span> *pmemdest, <span class="type">const</span> <span class="type">void</span> *src, <span class="type">size_t</span> len)</span>;</span><br><span class="line"><span class="type">void</span> *<span class="title function_">pmem_memcpy_persist</span><span class="params">(<span class="type">void</span> *pmemdest, <span class="type">const</span> <span class="type">void</span> *src, <span class="type">size_t</span> len)</span>;</span><br><span class="line"><span class="type">void</span> *<span class="title function_">pmem_memset_persist</span><span class="params">(<span class="type">void</span> *pmemdest, <span class="type">int</span> c, <span class="type">size_t</span> len)</span>;</span><br><span class="line"><span class="type">void</span> *<span class="title function_">pmem_memmove_nodrain</span><span class="params">(<span class="type">void</span> *pmemdest, <span class="type">const</span> <span class="type">void</span> *src, <span class="type">size_t</span> len)</span>;</span><br><span class="line"><span class="type">void</span> *<span class="title function_">pmem_memcpy_nodrain</span><span class="params">(<span class="type">void</span> *pmemdest, <span class="type">const</span> <span class="type">void</span> *src, <span class="type">size_t</span> len)</span>;</span><br><span class="line"><span class="type">void</span> *<span class="title function_">pmem_memset_nodrain</span><span class="params">(<span class="type">void</span> *pmemdest, <span class="type">int</span> c, <span class="type">size_t</span> len)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>  语义上讲，这些函数都相当于调用glibc的同名函数再补上<code>pmem_flush</code>和<code>pmem_drain（可选）</code>，只不过no_drain提供了更细的粒度，让我们有能力对多个不相干的数据分别写入，最后一并调用<code>pmem_drain</code>。</p>
+</li>
+<li><p>每个参赛队伍的引擎设计思路</p>
+</li>
+<li><p>参考</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://code.aliyun.com/db_contest_2nd/tair-contest/blob/master/docs/PMEM%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8C%97.md">PMEM编程指北</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/12/05/cephfs%E6%BA%90%E7%A0%81%E8%B0%83%E8%AF%95/" rel="prev" title="cephfs源码调试">
+      <i class="fa fa-chevron-left"></i> cephfs源码调试
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/12/19/pmemkv%E7%BB%84%E4%BB%B6%E5%AD%A6%E4%B9%A0/" rel="next" title="pmemkv组件学习">
+      pmemkv组件学习 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PMDK-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">PMDK 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PMDK%E7%9A%84%E5%85%B8%E5%9E%8B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">PMDK的典型应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E6%B2%A1%E6%9C%89%E5%A5%BD%E7%9A%84%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">有没有好的项目推荐？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PMEM%E7%BC%96%E7%A8%8B%E6%8C%87%E5%8D%97"><span class="nav-number">3.0.1.</span> <span class="nav-text">PMEM编程指南</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">已经混了一年研究生的摆子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yux20000304" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yux20000304" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yuxinyang@hust.edu.cn" title="E-Mail → mailto:yuxinyang@hust.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'e2631b7e4c831f9e25a8',
+      clientSecret: '5ca1a49b2a28ec6f2a80cc9e45ca8243cc839558',
+      repo        : 'blog-comments',
+      owner       : 'yux20000304',
+      admin       : ['yux20000304'],
+      id          : '6fa6072fbd5d71b78ed2341e7d9c7f2b',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+
+
+</body>
+</html>

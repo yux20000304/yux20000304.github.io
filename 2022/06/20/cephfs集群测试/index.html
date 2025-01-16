@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文旨在帮助使用ceph-deploy工具的人们快速完成集群搭建，后续给出了使用mdtest对Cephfs的元数据操作性能进行测试。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cephfs集群测试">
+<meta property="og:url" content="http://example.com/2022/06/20/cephfs%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/index.html">
+<meta property="og:site_name" content="想学打球的菜鸡">
+<meta property="og:description" content="本文旨在帮助使用ceph-deploy工具的人们快速完成集群搭建，后续给出了使用mdtest对Cephfs的元数据操作性能进行测试。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-20T03:29:50.000Z">
+<meta property="article:modified_time" content="2025-01-16T05:08:51.000Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/06/20/cephfs%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>cephfs集群测试 | 想学打球的菜鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">想学打球的菜鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">资料整理</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a>
+
+  </li>
+        <li class="menu-item menu-item-academic">
+
+    <a href="/academic/" rel="section"><i class="fa fa-user fa-fw"></i>个人主页</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/20/cephfs%E9%9B%86%E7%BE%A4%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="已经混了一年研究生的摆子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想学打球的菜鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          cephfs集群测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-20 11:29:50" itemprop="dateCreated datePublished" datetime="2022-06-20T11:29:50+08:00">2022-06-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-16 13:08:51" itemprop="dateModified" datetime="2025-01-16T13:08:51+08:00">2025-01-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%9E%E9%AA%8C%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">实验记录</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文旨在帮助使用ceph-deploy工具的人们快速完成集群搭建，后续给出了使用mdtest对Cephfs的元数据操作性能进行测试。</p>
+<span id="more"></span>
+
+<h3 id="四节点搭建示例"><a href="#四节点搭建示例" class="headerlink" title="四节点搭建示例"></a>四节点搭建示例</h3><h4 id="环境介绍"><a href="#环境介绍" class="headerlink" title="环境介绍"></a>环境介绍</h4><table>
+<thead>
+<tr>
+<th>name</th>
+<th>IP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ca62*</td>
+<td>192.168.3.39</td>
+</tr>
+<tr>
+<td>ca44</td>
+<td>192.168.3.16</td>
+</tr>
+<tr>
+<td>ca45</td>
+<td>192.168.3.17</td>
+</tr>
+<tr>
+<td>ca46</td>
+<td>192.168.3.18</td>
+</tr>
+<tr>
+<td>使用了Centos 7.6.1810的linux版本。</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>首先需要在ca62节点上建立ssh密钥，之后把公钥复制到其余节点的.ssh目录下的authorize_host文件中完成免密登陆配置。</p>
+<h4 id="Ceph集群搭建准备工作"><a href="#Ceph集群搭建准备工作" class="headerlink" title="Ceph集群搭建准备工作"></a>Ceph集群搭建准备工作</h4><p>首先需要更换yum源并安装epel源</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment"># 删除默认yum源并配置阿里yum源</span></span><br><span class="line">rm -f <span class="regexp">/etc/yum</span>.repos.d/*.repo</span><br><span class="line">wget http:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/repo/</span>Centos-<span class="number">7</span>.repo  -P <span class="regexp">/etc/yum</span>.repos.d/</span><br><span class="line"><span class="comment"># 安装EPEL源</span></span><br><span class="line">wget http:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/repo/</span>epel-<span class="number">7</span>.repo -P <span class="regexp">/etc/yum</span>.repos.d/</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>接下来需要修改ceph源，这一步很重要，使用默认的ceph源会遇到各种奇怪的问题，这里选择了octopus发行版本，不建议下载太新的Ceph版本。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; <span class="regexp">/etc/yum</span>.repos.d/ceph.repo &lt;&lt;EOF</span><br><span class="line">[ceph]</span><br><span class="line">name=ceph</span><br><span class="line">baseurl=http:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/ceph/</span>rpm-octopus<span class="regexp">/el7/</span>x86_64/</span><br><span class="line">gpgcheck=<span class="number">0</span></span><br><span class="line">[ceph-noarch]</span><br><span class="line">name=cephnoarch</span><br><span class="line">baseurl=http:<span class="regexp">//mi</span>rrors.aliyun.com<span class="regexp">/ceph/</span>rpm-octopus<span class="regexp">/el7/</span>noarch/</span><br><span class="line">gpgcheck=<span class="number">0</span>                          </span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>在ca62节点上安装ceph-deploy</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#更新yum源</span></span><br><span class="line">yum update</span><br><span class="line"><span class="comment">#安装依赖包</span></span><br><span class="line">yum <span class="keyword">install </span>-y chrony conntrack ipset <span class="keyword">jq </span>iptables curl sysstat libseccomp wget socat git python-setuptools</span><br><span class="line"><span class="comment">#安装ceph-deploy工具</span></span><br><span class="line">yum <span class="keyword">install </span>-y ceph-deploy</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>配置系统时间并设置时钟同步</p>
+<figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">timedatectl</span> <span class="built_in">set-timezone</span> <span class="string">Asia</span>/<span class="string">Shanghai</span></span><br><span class="line"></span><br><span class="line"><span class="string">timedatectl</span> <span class="string">status</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将当前的 UTC 时间写入硬件时钟</span></span><br><span class="line"><span class="string">timedatectl</span> <span class="built_in">set-local-rtc</span> <span class="string">0</span></span><br><span class="line"><span class="comment"># 重启依赖于系统时间的服务</span></span><br><span class="line"><span class="string">systemctl</span> <span class="string">restart</span> <span class="string">rsyslog</span> </span><br><span class="line"><span class="string">systemctl</span> <span class="string">restart</span> <span class="string">crond</span></span><br><span class="line"></span><br><span class="line"><span class="string">systemctl</span> <span class="string">stop</span> <span class="string">postfix</span> &amp;&amp; <span class="string">systemctl</span> <span class="string">disable</span> <span class="string">postfix</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>完成以上操作，重启所有主机。</p>
+<h4 id="部署Ceph集群步骤"><a href="#部署Ceph集群步骤" class="headerlink" title="部署Ceph集群步骤"></a>部署Ceph集群步骤</h4><p>建立一个工作目录，用来保存ceph集群部署过程中生成的密钥等文件。</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/admin-<span class="keyword">node</span></span><br><span class="line"><span class="title">cd</span> ~/admin-<span class="keyword">node</span><span class="title"></span></span><br></pre></td></tr></table></figure>
+<p>在所有的节点上安装ceph，这里不建议使用ceph-deploy中提供的install指令，会重新定义epel源和ceph源，可能会发生依赖错误以及网络超时等错误。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#在所有的节点上执行该指令</span></span><br><span class="line">yum <span class="keyword">install</span> -y ceph ceph-radosgw</span><br></pre></td></tr></table></figure>
+<p>开始创建一个ceph集群</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy <span class="keyword">new</span> --public-network <span class="number">192.168</span>.<span class="number">3.0</span>/<span class="number">24</span> ca62</span><br><span class="line">#添加允许ceph时间偏移</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;mon clock drift allowed = 2&quot;</span> &gt;&gt; ceph.<span class="keyword">conf</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;mon clock drift warn backoff = 30&quot;</span> &gt;&gt; ceph.<span class="keyword">conf</span></span><br><span class="line">#修改mds参数</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;mds_cache_memory_limit = 17179869184&quot;</span> &gt;&gt; ceph.<span class="keyword">conf</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;mds_cache_trim_decay_rate = 10&quot;</span> &gt;&gt; ceph.<span class="keyword">conf</span></span><br></pre></td></tr></table></figure>
+<p>执行完以上指令后会在当前目录下生成了ceph.conf，log文件，和ceph.mon.keyring认证管理密钥，注意到这里的ceph.conf可以配置ceph集群相关的参数，具体的参数以及含义可以通过官网进行查询。</p>
+<p>接下来初始化mon节点</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph<span class="operator">-</span>deploy mon <span class="keyword">create</span><span class="operator">-</span><span class="keyword">initial</span></span><br></pre></td></tr></table></figure>
+<p>执行完上述指令可以执行ls指令查看当前目录下生成了很多的模块密钥，这些密钥保证了集群节点之间的认证，接下来需要把这些密钥以及ceph.conf配置文件拷贝到其余节点上</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy <span class="comment">--overwrite-conf admin ca62 ca44 ca45 ca46</span></span><br></pre></td></tr></table></figure>
+<p>这里的overwrite-conf参数帮助我们以后在修改了ceph.conf配置文件后能够把集群节点的配置文件更新覆盖。</p>
+<p>此时可以查看ceph集群的状态：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ceph -s</span></span><br></pre></td></tr></table></figure>
+<p>可以看到此时的ceph集群状态是警告形式，需要关闭不安全模式</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph<span class="built_in"> config </span><span class="built_in">set</span> mon auth_allow_insecure_global_id_reclaim <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p>之后就可以看到ceph集群的健康状态变成了ok，之后开始添加osd节点，首先需要确定在每个ceph节点上都有一块裸磁盘用来作为osd盘，一定要先解除磁盘挂载并格式化，再把磁盘作为osd添加进入集群。</p>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>osd磁盘</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ca44</td>
+<td>&#x2F;dev&#x2F;sdb</td>
+</tr>
+<tr>
+<td>ca45</td>
+<td>&#x2F;dev&#x2F;sdb</td>
+</tr>
+<tr>
+<td>ca46</td>
+<td>&#x2F;dev&#x2F;sdb</td>
+</tr>
+</tbody></table>
+<p>上述介绍了三个数据存储节点的空闲磁盘的使用情况，首先格式化每个磁盘</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.ext4 <span class="regexp">/dev/</span>sdb </span><br></pre></td></tr></table></figure>
+<p>之后在主节点中使用ceph-deploy工具创建osd节点</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create ca44 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca45 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca46 --data <span class="regexp">/dev/</span>sdb</span><br></pre></td></tr></table></figure>
+<p>之后可以执行ceph -s指令查看此时的ceph集群状态，可以看到3个osd节点已经成功上线，但是系统会提示缺少mgr提供的守护进程，这个时候选在主节点创建一个mgr模块</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mgr <span class="keyword">create</span> ca62</span><br></pre></td></tr></table></figure>
+
+<h4 id="Cephfs文件系统"><a href="#Cephfs文件系统" class="headerlink" title="Cephfs文件系统"></a>Cephfs文件系统</h4><p>RBD块存储不支持多个主机共享一块磁盘，这个时候就需要添加cephfs文件系统。首先在每个节点上建立mds</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mds <span class="keyword">create</span> ca62 ca44 ca45 ca46</span><br></pre></td></tr></table></figure>
+<p>接下来创建两个存储池，一个用来保存数据，一个用来保存元数据</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ceph</span> osd pool create cephfs_data <span class="number">64</span> <span class="number">64</span></span><br><span class="line"><span class="attribute">ceph</span> osd pool create cephfs_metadata <span class="number">64</span> <span class="number">64</span></span><br></pre></td></tr></table></figure>
+<p>接下来创建cephfs文件系统，把之前的两个数据池连接起来</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ceph fs <span class="keyword">new</span> <span class="type">cephfs</span>-yyx cephfs_metadata cephfs_data</span><br><span class="line"><span class="meta">#可以修改mds的active数量</span></span><br><span class="line"> ceph fs <span class="keyword">set</span> cephfs-yyx max_mds <span class="number">12</span> </span><br></pre></td></tr></table></figure>
+<p>执行完成后查看集群状态可以看到cephfs文件系统成功创建，接下来考虑挂载cephfs，一共有两种挂载方式，这里首先介绍在内核中挂载</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查看client的密钥</span></span><br><span class="line"><span class="attribute">ceph</span> auth list</span><br><span class="line"><span class="comment">#创建挂载目录</span></span><br><span class="line"><span class="attribute">mkdir</span> /mnt/fs&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>&#125;</span><br><span class="line"><span class="comment">#使用mount命令进行挂载</span></span><br><span class="line"><span class="attribute">mount</span> -t ceph <span class="number">192.168.3.39:6789</span>:/ /mnt/fs1 -o name=admin,secret=<span class="variable">$&#123;client的密钥&#125;</span></span><br><span class="line"><span class="comment">#使用df命令查看挂载情况</span></span><br><span class="line"><span class="attribute">df</span> -h</span><br></pre></td></tr></table></figure>
+<p>这里既没有选择fuse挂载，也没有使用内核挂载的方式，而是使用了mdtest中的cephfs中的测试工具，具体操作接下来进行介绍</p>
+<h4 id="使用ior中的mdtest对cephfs的元数据操作进行性能测试"><a href="#使用ior中的mdtest对cephfs的元数据操作进行性能测试" class="headerlink" title="使用ior中的mdtest对cephfs的元数据操作进行性能测试"></a>使用ior中的mdtest对cephfs的元数据操作进行性能测试</h4><ul>
+<li>MDTest 使用说明</li>
+</ul>
+<p>mdtest 是一个简单的 I&#x2F;O 基准测试工具，现在是<a target="_blank" rel="noopener" href="https://github.com/hpc/ior">IOR</a> 工具套件的一部分，用于向存储系统发出高度并发的元数据操作流。IOR目前支持HDFS，CephFS，RADOS，以及POSIX标准接口文件系统的测试。它旨在展示文件系统能够为包括 mkdir、stat、rmdir、creat、open、close 和 mv在内的元数据操作提供服务的峰值速率。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">yum install libcephfs-devel -y</span><br><span class="line">./configure --with-cephfs</span><br><span class="line">vim <span class="regexp">/usr/i</span>nclude<span class="regexp">/cephfs/</span>libcephfs.h</span><br><span class="line"><span class="comment">#添加sys/time.h库</span></span><br><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>IOR目录：</p>
+</li>
+<li><p><code>doc</code> - 包含IOR所有文档。</p>
+</li>
+<li><p><code>src</code> - 所有源码文件，及编译生成的库文件，二进制文件。编译完成后，使用mdtest –help可查看帮助信息。</p>
+</li>
+<li><p><code>testing</code> - 测试用脚本。该目录包含所有测试脚本。<code>test-lib.sh</code>脚本中配置了基本参数，如测试路径，输出路径，日志等级等，不需要修改。<code>basic-tests.sh</code> 和 <code>complex-tests.sh</code>为具体测试脚本。</p>
+</li>
+<li><p><code>test_log</code> - 测试输出文件，包含所有测试结果。目录<code>basic</code>保存<code>basic-tests.sh</code>的测试结果，目录<code>advanced</code>保存<code>complex-tests.sh</code>测试结果。</p>
+</li>
+<li><p><code>mpi_server.conf</code>，设置程序运行的所有节点。源程序中没有，我手动添加的文件。</p>
+</li>
+</ul>
+<p>目前只使用到IOR中的MDtest工具。</p>
+<ul>
+<li>Cephfs测试流程：</li>
+</ul>
+<ol>
+<li><p>功能性测试：</p>
+<p><code>src/mdtest -a CEPHFS --cephfs.user=xxx --cephfs.conf=xxx --cephfs.prefix=xxx</code> </p>
+<p>进行简单测试，验证正确性。可附加其他参数，参数具体含义可使用<code>src/mdtest --help</code>查看。</p>
+<p><em>需要填写的配置信息，</em></p>
+<ul>
+<li><em>cephfs.user ceph用户名 cephfs.conf；</em></li>
+<li><em>配置文件路径（&#x2F;etc&#x2F;ceph&#x2F;ceph.conf）；</em></li>
+<li><em>cephfs.prefix：文件的统一前缀，不太清除具体含义。</em></li>
+</ul>
+</li>
+<li><p>本地多进程测试（注意要修改mpi_server.conf中的节点名称，这里先只使用ca62进行多进程测试）。进入<code>complex-tests.sh</code>，修改脚本为</p>
+<p><code>MDTEST 8 -a CEPHFS -n 100000 -b 200 -z 1 -x stonewall-md.log -u -L -R --cephfs.user=xxx --cephfs.conf=xxx --cephfs.prefix=xxx</code> &#96;</p>
+<p>回到ior目录，运行脚本。运行后将启动8个进程，进行带宽测试。修改进程数，直到测试出吞吐率上限。参数具体含义可使用<code>src/mdtest --help</code>查看。</p>
+</li>
+<li><p>分布式多进程测试。进入<code>mpi_server.conf</code>，配置节点名称。MDTest将在配置的节点上分配进程，进行分布式测试。</p>
+</li>
+</ol>
+<h4 id="测试过程中可能会遇到的问题"><a href="#测试过程中可能会遇到的问题" class="headerlink" title="测试过程中可能会遇到的问题"></a>测试过程中可能会遇到的问题</h4><h5 id="创建osd的问题"><a href="#创建osd的问题" class="headerlink" title="创建osd的问题"></a>创建osd的问题</h5><p>在集群中添加新的osd时可能会遇到创建失败的情况，一般会有三种情况。</p>
+<ul>
+<li>第一种是网络通信出现了问题，建议检查每个节点是否能够和主节点进行通信。</li>
+<li>第二种情况比较复杂，会显示找不到设备。这种时候需要我们去每台机器上检查对应的磁盘情况，接触挂载后完成格式化才能使用。</li>
+<li>第三种情况会显示创建失败，这种情况去每台机器上查看对应的磁盘使用情况 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查看挂载情况</span></span><br><span class="line"><span class="built_in">df</span> -h</span><br><span class="line"><span class="comment">#查看磁盘使用情况</span></span><br><span class="line">fdisk -l</span><br></pre></td></tr></table></figure>
+ 如果发现了有的磁盘以lvm的形式挂载在ceph目录下，需要彻底删除lvm设备 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ceph</span>-volume lvm list</span><br><span class="line"><span class="attribute">vgremove</span> <span class="variable">$&#123;查询到的ceph块设备号&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>通过以上的方法应该可以解决osd相关的问题。</p>
+<h4 id="快速重新搭建ceph（16节点）"><a href="#快速重新搭建ceph（16节点）" class="headerlink" title="快速重新搭建ceph（16节点）"></a>快速重新搭建ceph（16节点）</h4><ul>
+<li><p>有时可能会遇到集群故障等情况，可以选择重新搭建：</p>
+<ol>
+<li>首先需要删除所有节点上安装的ceph，进入admin-node目录后：  <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在每台机器上更新yum源</span></span><br><span class="line"><span class="attribute">yum</span> update</span><br><span class="line"><span class="comment"># 删除所有节点的ceph ceph-radosgw</span></span><br><span class="line">ceph-deploy purge ca62 ca34 ca37 ca39 ca44 ca45 ca46 ca47 ca48 ca57 ca59 ca66 ca68 ca94 ca95 ca96</span><br><span class="line"><span class="comment"># 删除所有的ceph数据</span></span><br><span class="line">ceph-deploy purgedata ca62 ca34 ca37 ca39 ca44 ca45 ca46 ca47 ca48 ca57 ca59 ca66 ca68 ca94 ca95 ca96</span><br><span class="line"><span class="comment">#删除所有key</span></span><br><span class="line">ceph-deploy forgetkeys</span><br></pre></td></tr></table></figure></li>
+<li>在每台机器上安装ceph：  <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意这里不要使用ceph-deploy的install指令进行安装，会修改ceph源</span></span><br><span class="line">yum <span class="keyword">install</span> ceph ceph-radosgw</span><br></pre></td></tr></table></figure></li>
+<li>检查每台机器上的磁盘是否解除挂载了：</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>IP</th>
+<th>user</th>
+<th>password</th>
+<th>disk</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ca62*</td>
+<td>192.168.3.39</td>
+<td></td>
+<td></td>
+<td>none</td>
+</tr>
+<tr>
+<td>ca34</td>
+<td>192.168.3.194</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdb</td>
+</tr>
+<tr>
+<td>ca37</td>
+<td>192.168.3.197</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdb &#x2F;dev&#x2F;sdc</td>
+</tr>
+<tr>
+<td>ca39</td>
+<td>192.168.3.11</td>
+<td></td>
+<td></td>
+<td>none</td>
+</tr>
+<tr>
+<td>ca44</td>
+<td>192.168.3.16</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdb &#x2F;dev&#x2F;sdc</td>
+</tr>
+<tr>
+<td>ca45</td>
+<td>192.168.3.17</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdb</td>
+</tr>
+<tr>
+<td>ca46</td>
+<td>192.168.3.18</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdb &#x2F;dev&#x2F;sdc</td>
+</tr>
+<tr>
+<td>ca47</td>
+<td>192.168.3.19</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdb</td>
+</tr>
+<tr>
+<td>ca48</td>
+<td>192.168.3.20</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdb &#x2F;dev&#x2F;sdc</td>
+</tr>
+<tr>
+<td>ca57</td>
+<td>192.168.3.34</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdb &#x2F;dev&#x2F;sdc</td>
+</tr>
+<tr>
+<td>ca59</td>
+<td>192.168.3.36</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sda</td>
+</tr>
+<tr>
+<td>ca66</td>
+<td>192.168.3.43</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sda &#x2F;dev&#x2F;sdb</td>
+</tr>
+<tr>
+<td>ca68</td>
+<td>192.168.3.45</td>
+<td></td>
+<td></td>
+<td>none</td>
+</tr>
+<tr>
+<td>ca94</td>
+<td>192.168.3.94</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdb</td>
+</tr>
+<tr>
+<td>ca95</td>
+<td>192.168.3.95</td>
+<td></td>
+<td></td>
+<td>&#x2F;dev&#x2F;sdc</td>
+</tr>
+<tr>
+<td>ca96</td>
+<td>192.168.3.96</td>
+<td></td>
+<td></td>
+<td>none</td>
+</tr>
+</tbody></table>
+  <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查看lvm格式的磁盘</span></span><br><span class="line">ceph-volume lvm list</span><br><span class="line"><span class="comment">#移除挂载点，具体参数通过上面一条命令获取一般是/dev后面的一串参数，如：</span></span><br><span class="line">vgremove ceph-<span class="number">7</span>c5449b9-<span class="number">9995</span>-<span class="number">4</span>cfa-b255-<span class="number">21</span>e2a939b44b</span><br><span class="line"><span class="comment">#删除admin-node文件夹：</span></span><br><span class="line">sudo rm -rf admin-<span class="keyword">node</span></span><br><span class="line"><span class="title">#新建admin-node</span>文件夹：</span><br><span class="line">mkdir admin-<span class="keyword">node</span></span><br><span class="line"><span class="title">cd</span> admin-<span class="keyword">node</span><span class="title"></span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>重新部署集群<br>  开始创建一个ceph集群:  <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy <span class="keyword">new</span> --public-network <span class="number">192.168</span>.<span class="number">3.0</span>/<span class="number">24</span> ca62</span><br><span class="line">#添加允许ceph时间偏移</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;mon clock drift allowed = 2&quot;</span> &gt;&gt; ceph.<span class="keyword">conf</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;mon clock drift warn backoff = 30&quot;</span> &gt;&gt; ceph.<span class="keyword">conf</span></span><br><span class="line">#修改mds参数</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;mds_cache_memory_limit = 17179869184&quot;</span> &gt;&gt; ceph.<span class="keyword">conf</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;mds_cache_trim_decay_rate = 10&quot;</span> &gt;&gt; ceph.<span class="keyword">conf</span></span><br></pre></td></tr></table></figure></li>
+<li>接下来初始化mon节点  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph<span class="operator">-</span>deploy mon <span class="keyword">create</span><span class="operator">-</span><span class="keyword">initial</span></span><br></pre></td></tr></table></figure></li>
+<li>执行完上述指令可以执行ls指令查看当前目录下生成了很多的模块密钥，这些密钥保证了集群节点之间的认证，接下来需要把这些密钥以及ceph.conf配置文件拷贝到其余节点上  <figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy <span class="comment">--overwrite-conf admin ca62 ca34 ca37 ca39 ca44 ca45 ca46 ca47 ca48 ca57 ca59 ca66 ca68 ca94 ca95 ca96</span></span><br></pre></td></tr></table></figure>
+  这里的overwrite-conf参数帮助我们以后在修改了ceph.conf配置文件后能够把集群节点的配置文件更新覆盖。</li>
+</ol>
+<p>  此时可以查看ceph集群的状态：<br>  <figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ceph -s</span></span><br></pre></td></tr></table></figure><br>  可以看到此时的ceph集群状态是警告形式，需要关闭不安全模式<br>  <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph<span class="built_in"> config </span><span class="built_in">set</span> mon auth_allow_insecure_global_id_reclaim <span class="literal">false</span></span><br></pre></td></tr></table></figure><br>  之后就可以看到ceph集群的健康状态变成了ok，之后开始添加osd节点，首先需要确定在每个ceph节点上都有一块裸磁盘用来作为osd盘，一定要先解除磁盘挂载并格式化，再把磁盘作为osd添加进入集群。<br>  7. 之后在主节点中使用ceph-deploy工具创建osd节点<br>  <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create ca34 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca37 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca37 --data <span class="regexp">/dev/</span>sdc</span><br><span class="line">ceph-deploy osd create ca44 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca44 --data <span class="regexp">/dev/</span>sdc</span><br><span class="line">ceph-deploy osd create ca45 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca46 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca46 --data <span class="regexp">/dev/</span>sdc</span><br><span class="line">ceph-deploy osd create ca47 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca48 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca48 --data <span class="regexp">/dev/</span>sdc</span><br><span class="line">ceph-deploy osd create ca57 --data <span class="regexp">/dev/</span>sdb</span><br><span class="line">ceph-deploy osd create ca57 --data <span class="regexp">/dev/</span>sdc</span><br><span class="line">ceph-deploy osd create ca59 --data <span class="regexp">/dev/</span>sda</span><br><span class="line">ceph-deploy osd create ca66 --data <span class="regexp">/dev/</span>sda</span><br><span class="line">ceph-deploy osd create ca66 --data <span class="regexp">/dev/</span>sdb</span><br></pre></td></tr></table></figure><br>  8. 之后可以执行ceph -s指令查看此时的ceph集群状态，可以看到3个osd节点已经成功上线，但是系统会提示缺少mgr提供的守护进程，这个时候选在主节点创建一个mgr模块<br>  <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mgr <span class="keyword">create</span> ca62 ca34 ca37</span><br></pre></td></tr></table></figure><br>  9. cephfs文件系统创建<br>  RBD块存储不支持多个主机共享一块磁盘，这个时候就需要添加cephfs文件系统。首先在每个节点上建立mds<br>  <figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mds <span class="keyword">create</span> ca62 ca34 ca37 ca39 ca44 ca45 ca46 ca47 ca48 ca57 ca59 ca66 ca68 ca94 ca95 ca96</span><br></pre></td></tr></table></figure><br>  接下来创建两个存储池，一个用来保存数据，一个用来保存元数据<br>  <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ceph</span> osd pool create cephfs_data <span class="number">128</span> <span class="number">128</span></span><br><span class="line"><span class="attribute">ceph</span> osd pool create cephfs_metadata <span class="number">128</span> <span class="number">128</span></span><br></pre></td></tr></table></figure><br>  接下来创建cephfs文件系统，把之前的两个数据池连接起来<br>  <figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ceph fs <span class="keyword">new</span> <span class="type">cephfs</span>-yyx cephfs_metadata cephfs_data</span><br><span class="line"><span class="meta">#可以修改mds的active数量，这里修改为16</span></span><br><span class="line">ceph fs <span class="keyword">set</span> cephfs-yyx max_mds <span class="number">16</span></span><br></pre></td></tr></table></figure><br>  过一段时间所有的mds全部启动<br>  10. 添加两个monitor<br>  <figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mon <span class="built_in">add</span> ca34 <span class="comment">--address 192.168.3.194</span></span><br><span class="line">ceph-deploy mon <span class="built_in">add</span> ca37 <span class="comment">--address 192.168.3.197</span></span><br></pre></td></tr></table></figure><br>  执行ceph -s可以看到集群已就绪，报警的是备用mds不够，可以通过修改9中最红一条指令的参数来调整active mds的数量</p>
+</li>
+</ul>
+<h4 id="对比测试"><a href="#对比测试" class="headerlink" title="对比测试"></a>对比测试</h4><h5 id="对比测试介绍"><a href="#对比测试介绍" class="headerlink" title="对比测试介绍"></a>对比测试介绍</h5><p>为了进行论文实验部分的对比，在查阅了相关文献后，选择了SC’21上面的Lunule作为mds部分的优化对比测试。</p>
+<ul>
+<li>Lunule组件简介：作者通过在mds模块中添加了多个模块进行mds子树分割算法的补充优化，很好的提升了mds的负载均衡。整个Lunule是基于特定版本的ceph-luminous开发的。大致的测试结果会在后文中进行介绍。</li>
+</ul>
+<h5 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h5><ol>
+<li>在github下载源码仓库,并完成编译，注意使用的gcc版本与作者推荐的保持一致gcc-4.8.5：<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git clone https:<span class="regexp">//gi</span>thub.com<span class="regexp">/mdbal-lunule/</span>lunule.git</span><br><span class="line">sudo yum install -y wget</span><br><span class="line">wget ftp:<span class="regexp">//</span>ftp.pbone.net<span class="regexp">/mirror/</span>archive.fedoraproject.org<span class="regexp">/epel/</span><span class="number">7.2020</span>-<span class="number">04</span>-<span class="number">20</span><span class="regexp">/x86_64/</span>Packages<span class="regexp">/p/</span>python34-Cython-<span class="number">0.28</span>.<span class="number">5</span>-<span class="number">1</span>.el7.x86_64.rpm</span><br><span class="line">sudo yum install -y python34-Cython-<span class="number">0.28</span>.<span class="number">5</span>-<span class="number">1</span>.el7.x86_64.rpm</span><br><span class="line">./install-deps.sh</span><br><span class="line">./do_cmake.sh</span><br><span class="line">cd Lunule/build</span><br><span class="line">make -j16</span><br><span class="line">sudo make install -j16</span><br></pre></td></tr></table></figure>
+可能会遇到需要安装依赖bzip2-devel包，直接使用yum源进行安装即可，但是仍旧会在编译的时候发生报错，具体原因是宏展开的时候同名宏发生冲突，具体的解决办法见<a target="_blank" rel="noopener" href="https://github.com/ceph/ceph/pull/43491/commits/53040e4c0e9e86710b8800dbb7ea15b3fa196ebf">链接</a>，修改源玛后重新编译，成功。</li>
+<li>修改安装的ceph版本<br>注意到这里首先对ceph需要进行换源，修改后的ceph.conf如下：<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[ceph]</span></span><br><span class="line"><span class="attr">name</span>=ceph</span><br><span class="line"><span class="attr">baseurl</span>=http://mirrors.aliyun.com/ceph/rpm-luminous/el7/x<span class="number">86_64</span>/</span><br><span class="line"><span class="attr">gpgcheck</span>=<span class="number">0</span></span><br><span class="line"><span class="section">[ceph-noarch]</span></span><br><span class="line"><span class="attr">name</span>=cephnoarch</span><br><span class="line"><span class="attr">baseurl</span>=http://mirrors.aliyun.com/ceph/rpm-luminous/el7/noarch/</span><br><span class="line"><span class="attr">gpgcheck</span>=<span class="number">0</span></span><br></pre></td></tr></table></figure>
+这里替换成了阿里云上的ceph-luminous版本进行测试，原文推荐使用ceph-12.2.5版本，这里使用了ceph-12.2.13版本。下载完成后安装到mds模块中，修改ceph.conf参数:<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">mon</span> clock drift allowed = <span class="number">2</span></span><br><span class="line"><span class="attribute">mon</span> clock drift warn backoff = <span class="number">30</span></span><br><span class="line"><span class="attribute">mon</span> clock drift allowed = <span class="number">2</span></span><br><span class="line"><span class="attribute">mon</span> clock drift warn backoff = <span class="number">30</span></span><br><span class="line"><span class="attribute">mds</span> reconnect timeout = <span class="number">180</span></span><br><span class="line"><span class="attribute">mds</span> session timeout = <span class="number">180</span></span><br><span class="line"><span class="attribute">mds_cache_memory_limit</span> = <span class="number">17179869184</span></span><br><span class="line"><span class="attribute">mds_cache_trim_decay_rate</span> = <span class="number">10</span></span><br><span class="line"><span class="attribute">mon_pg_warn_min_per_osd</span> = <span class="number">0</span></span><br><span class="line"><span class="comment">#Lunule configuration</span></span><br><span class="line"><span class="attribute">mds</span> bal ifenable = <span class="number">1</span></span><br><span class="line"><span class="attribute">mds</span> bal presetmax = <span class="number">8000</span></span><br><span class="line"><span class="attribute">mds</span> bal ifthreshold = <span class="number">0</span>.<span class="number">075</span><span class="meta"></span></span><br><span class="line"><span class="meta">[client]</span></span><br><span class="line"><span class="attribute">client</span> cache size = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+这里使用mdtest进行测试，不同于文中作者进行的测试，我们测试了不同目录深度的情况。最终发现除了创建文件目录相比于原生ceph有一定提升外，其余操作的性能均发生大幅度的下降？</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/18/%E5%9F%BA%E4%BA%8Epmem%E7%9A%84%E5%BF%AB%E9%80%9F%E8%AE%BF%E9%97%AE/" rel="prev" title="基于pmem的快速访问">
+      <i class="fa fa-chevron-left"></i> 基于pmem的快速访问
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/07/06/CS15445-lab1/" rel="next" title="CS15445-lab1">
+      CS15445-lab1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E8%8A%82%E7%82%B9%E6%90%AD%E5%BB%BA%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.</span> <span class="nav-text">四节点搭建示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">环境介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Ceph%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.2.</span> <span class="nav-text">Ceph集群搭建准备工作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2Ceph%E9%9B%86%E7%BE%A4%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.3.</span> <span class="nav-text">部署Ceph集群步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cephfs%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.4.</span> <span class="nav-text">Cephfs文件系统</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8ior%E4%B8%AD%E7%9A%84mdtest%E5%AF%B9cephfs%E7%9A%84%E5%85%83%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C%E8%BF%9B%E8%A1%8C%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">1.5.</span> <span class="nav-text">使用ior中的mdtest对cephfs的元数据操作进行性能测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%8F%AF%E8%83%BD%E4%BC%9A%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.6.</span> <span class="nav-text">测试过程中可能会遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAosd%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.6.1.</span> <span class="nav-text">创建osd的问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E9%87%8D%E6%96%B0%E6%90%AD%E5%BB%BAceph%EF%BC%8816%E8%8A%82%E7%82%B9%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">快速重新搭建ceph（16节点）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95"><span class="nav-number">1.8.</span> <span class="nav-text">对比测试</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E6%B5%8B%E8%AF%95%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.8.1.</span> <span class="nav-text">对比测试介绍</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.8.2.</span> <span class="nav-text">安装步骤</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">已经混了一年研究生的摆子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yux20000304" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yux20000304" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yuxinyang@hust.edu.cn" title="E-Mail → mailto:yuxinyang@hust.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'e2631b7e4c831f9e25a8',
+      clientSecret: '5ca1a49b2a28ec6f2a80cc9e45ca8243cc839558',
+      repo        : 'blog-comments',
+      owner       : 'yux20000304',
+      admin       : ['yux20000304'],
+      id          : '0d05b7f66bf96d28e3ae6f0b1abc6208',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+
+
+</body>
+</html>

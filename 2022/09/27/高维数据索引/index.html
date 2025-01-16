@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="高维数据索引">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高维数据索引">
+<meta property="og:url" content="http://example.com/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/index.html">
+<meta property="og:site_name" content="想学打球的菜鸡">
+<meta property="og:description" content="高维数据索引">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/1.png">
+<meta property="og:image" content="http://example.com/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/2.png">
+<meta property="og:image" content="http://example.com/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/3.png">
+<meta property="og:image" content="http://example.com/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/4.png">
+<meta property="article:published_time" content="2022-09-27T08:37:02.000Z">
+<meta property="article:modified_time" content="2025-01-16T05:08:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/1.png">
+
+<link rel="canonical" href="http://example.com/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>高维数据索引 | 想学打球的菜鸡</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">想学打球的菜鸡</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">资料整理</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">0</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">38</span></a>
+
+  </li>
+        <li class="menu-item menu-item-academic">
+
+    <a href="/academic/" rel="section"><i class="fa fa-user fa-fw"></i>个人主页</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="已经混了一年研究生的摆子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="想学打球的菜鸡">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          高维数据索引
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-09-27 16:37:02" itemprop="dateCreated datePublished" datetime="2022-09-27T16:37:02+08:00">2022-09-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-16 13:08:51" itemprop="dateModified" datetime="2025-01-16T13:08:51+08:00">2025-01-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%B0%83%E7%A0%94-%E6%80%9D%E8%80%83/" itemprop="url" rel="index"><span itemprop="name">调研&思考</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>高维数据索引</p>
+<span id="more"></span>
+
+<h2 id="想法来源"><a href="#想法来源" class="headerlink" title="想法来源"></a>想法来源</h2><ol>
+<li><p>为什么需要数据库索引</p>
+<p> 数据存储作为计算机的重要组成部分，经常以条目的形式存储在磁盘等存储设备上。计算机会在需要某些数据的时候从磁盘中把一部分数据加载到内存等高速存储设备中，最简单的方式就是顺序扫描整个磁盘并找到需要的数据，但是这个过程产生的时间开销可能是十分巨大的。</p>
+<p> 人们为了能够加速数据获取的速度，考虑在内存中建立索引结构。常见的索引结构如B+树（读性能优异，插入更新操作比较耗时），哈希表（查询较快，但是处理哈希冲突以及扩容操作会比较耗时），基数树（空间利用率很高，但是查询以及更新操作比较耗时）等等，每一种数据结构都有自身的优势和劣势，在各自特定的工作场景下有着不错的性能表现。</p>
+</li>
+<li><p>为什么会考虑高维数据索引</p>
+<p> 目前使用率最为广泛的索引数据结构B+树，由于能够把数据有序的放在磁盘中，减少了磁盘IO。但是当我们遇到了高维数据时，如何对数据进行排序来减小磁盘IO成了一个大问题。1987年，人们曾提出了基于B树的高维数据索引R树，通过构建最小矩形（MBR）对空间进行分割，保证了在进行数据查询时的空间局部性，减小了磁盘IO。但是，由于R树在构建过程中会发生重叠的MBR，导致额外的查询开销，并且在插入更新的操作过程中产生的时间开销十分巨大，R树的性能表现仍旧有很大的提升空间。</p>
+</li>
+<li><p>高维数据库的应用场景</p>
+<p> 常见的GPS，地图查询，高维图片数据存储。在SQLite中使用了R树加速了空间查询操作，常见的地理信息软件也提供了如geopandas等库加速对空间数据的查询访问操作。</p>
+</li>
+</ol>
+<h2 id="传统数据索引总结介绍"><a href="#传统数据索引总结介绍" class="headerlink" title="传统数据索引总结介绍"></a>传统数据索引总结介绍</h2><table>
+<thead>
+<tr>
+<th>索引名称</th>
+<th>适用的查询类型</th>
+<th>适用的数据类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B树</td>
+<td>点查询</td>
+<td>一维数据</td>
+</tr>
+<tr>
+<td>B+树</td>
+<td>点查询</td>
+<td>一维数据</td>
+</tr>
+<tr>
+<td>B*树</td>
+<td>点查询</td>
+<td>一维数据</td>
+</tr>
+<tr>
+<td>UB树</td>
+<td>点查询，区间查询</td>
+<td>一维数据，多维数据</td>
+</tr>
+<tr>
+<td>H树</td>
+<td>点查询</td>
+<td>一维数据</td>
+</tr>
+<tr>
+<td>$ST^2B$树</td>
+<td>区间查询，knn查询</td>
+<td>多维数据</td>
+</tr>
+<tr>
+<td>Compact-B树</td>
+<td>点查询</td>
+<td>一维数据</td>
+</tr>
+<tr>
+<td>R树</td>
+<td>区间查询</td>
+<td>多维数据</td>
+</tr>
+<tr>
+<td>R+树</td>
+<td>区间查询</td>
+<td>多维数据</td>
+</tr>
+<tr>
+<td>R*树</td>
+<td>点查询，区间查询</td>
+<td>空间数据，多维数据</td>
+</tr>
+<tr>
+<td>X树</td>
+<td>区间查询</td>
+<td>多维数据，高维数据</td>
+</tr>
+<tr>
+<td>M树</td>
+<td>区间查询，knn查询</td>
+<td>多维数据</td>
+</tr>
+<tr>
+<td>Hilbert-R树</td>
+<td>区间查询</td>
+<td>多维数据</td>
+</tr>
+<tr>
+<td>BR树</td>
+<td>点查询，区间查询，覆盖查询，绑定查询</td>
+<td>一维数据，多维数据</td>
+</tr>
+<tr>
+<td>QR+树</td>
+<td>区间查询</td>
+<td>大范围的空间数据</td>
+</tr>
+</tbody></table>
+<h2 id="学术界调研结果"><a href="#学术界调研结果" class="headerlink" title="学术界调研结果"></a>学术界调研结果</h2><p>为了进一步调研学术界对于高维数据的索引构建方法，我首先阅读了近几年针对高维数据索引比较火的一个方向：基于学习索引的高维数据处理介绍，接下来先介绍一篇该领域的文献综述：  </p>
+<ul>
+<li>A Tutorial on Learned Multi-dimensional Indexes  <ul>
+<li>前言<ul>
+<li>首先介绍了学习索引的来历，以及相比于传统的索引，O(1)复杂度的学习索引更加高效。这里首先讲述了最先提出学习索引的文献：The Handwritten Trie: Indexing Electronic Ink，作者提出使用隐马尔可夫模型建立学习索引。作者把当前学习索引划分了两个研究方向：</li>
+</ul>
+<ol>
+<li>对学习的模型进行索引</li>
+<li>对索引数据进行学习最后得到一个模型</li>
+</ol>
+<ul>
+<li>大部分的学习索引结构只能够很好的解决只读场景下的性能要求，但是对于更新操作，目前也有新的方案被提出：ALEX: An Updatable Adaptive Learned Index，这篇文献能够很好的解决更新操作。</li>
+<li>传统的高维数据的索引之前已经介绍过，在此不赘述。Sagedb: A learned database system.这个是谷歌提出的基于机器学习的数据库，其中有关于一维和高维数据的索引设计方案但是细节部分没有介绍。  <img src="/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/1.png" class=""></li>
+</ul>
+</li>
+<li>part1：学习索引  <ul>
+<li>首先介绍了学习索引近几年的开山之作：The Case for Learned Index Structures这篇18年的vldb的文章，首次提出使用学习模型替换一维数据索引B+树的功能。包括从最简单的使用CDF曲线替换索引，以及稍微复杂的使用RMI模型，通过构造一个类似决策树模型的数据结构，提升整个学习索引的预测准确率。单纯学习CDF累计函数曲线这种方案在学习整个数据集之后得到的预测准确率不是很高。为了进一步提升学习索引的准确率，一种回归模型被提出（Recursive Model Index）。该模型的基本思路是，类似于决策树的方式，通过建立多层简单预测模型，不断对预测结果进行修正，保证较高的预测准确率。  <img src="/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/2.png" class="">
+  与此相关的有一篇文献:CDFshop，里面讲述了如何通过设置多层预测模型提升学习索引的正确率，对于寻找到最适合的基本函数以及最高效参数配置，也提出了一套启发式算法进行搜索，最终提供了一套可视化软件，能够直观的反应RMI参数的影响。最终得到的结论是：学习到的索引结构可以提供具有较小内存占用的快速查找时间，但需要进行适当的调优。我们的演示将让观众成员直观地了解RMI的参数如何影响查找延迟和模型大小的权衡。</li>
+<li>虽然以上的设计方案在只读情景下的性能远超传统的数据索引。但是数据库中存储的数据集并不是一成不变的，面对需要进行数据更新以及数据删除的情景，之前训练好的CDF函数需要重新进行训练以保证高准确率。针对更新场景，ALEX：An Updatable Adaptive Learned Index这篇文献进行了一个新的设计构想。ALEX专门针对传统的学习索引的不足进行提升，通过对RMI模型进行进一步的修改，实现了对新数据插入功能的支持。  <img src="/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/3.png" class="">
+  上图给出了ALEX的主要设计图，分为中间节点和数据节点，中间节点通过做出CDF曲线，如果某一部分为接近线性分布，就使用一个数据节点表示该区间，添加到原中间节点的子结点中。对于不符合线性分布的区间，就使用一个新的中间节点来表示该区间，并把该新的中间节点添加到原中间节点的子结点中。  <img src="/2022/09/27/%E9%AB%98%E7%BB%B4%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95/4.png" class="">
+  上图给出了一个例子，右图给出的是数据分布的CDF曲线，左图是根据上述策略生成的索引结构。此外，ALEX提出了一套节点分裂算法来保证负载的均衡性。通过建立有空隙的数组来满足快速插入的要求。</li>
+</ul>
+</li>
+<li>part2：高维数据学习索引  <ul>
+<li>基于上面给出的一部分学习索引的例子，作者继续介绍了针对高维数据的学习索引。首先介绍了：The Case for Learned Spatial Indexes，这篇文章主要介绍使用不同的分割算法对二维数据进行分割后（使用了Qg-tree,r-tree分割机制，fix-tree等），分别使用传统的二分查找和机器学习模型(这里提出了radixspline模型，区别于传统的RMI模型)进行查找的性能比较，得出的一个比较有趣的结论是，随着对每个分区包含的目录项数目的增加，查找性能会逐渐提升直到达到一个最佳优化点后才发生下降。针对每一个测试集，作者分别进行了不平衡负载和平衡负载查询测试，在不平衡查找操作过程中性能会下降一个数量级。此外，作者分别测试了基于机器学习模型的不同分割策略的查询延迟和内存使用率。最终得出的结论是，在传统的一维数据中，学习索引取得的效果更好，但是对于高维数据和分割算法有很大的关系，并且相比于传统索引优势没有特别明显。</li>
+<li>通过以上的文献，可以快速了解到对于高维数据建立学习索引的难点：<ol>
+<li>如何把二维数据存储在一维的磁盘上，目前常见的方法是进行分割（如网格法），在保留一部分数据的局部性的情况下把高维数据映射到一维空间。</li>
+<li>如何解决学习索引对数据的插入，更新，删除等操作后对模型准确率的影响。</li>
+<li>索引预测错误后的修正搜索策略产生的时间开销。</li>
+</ol>
+</li>
+<li>接下来介绍flood，这是专门针对高维数据建立的学习索引策略。<ol>
+<li>flood采用了常见的分割算法，把二维数据分割成一个个连续的cell，每一个cell中的数据在磁盘上连续的存储。</li>
+<li>查询操作流程：为了查询某个区间内的所有数据，会依次访问重叠cell中的数据，找到每个cell中满足要求的数据区间，对区间内的数据进行线性扫描过滤出所有满足要求的数据，最后把这些cell中的查询结果合并到一起作为结果返回。</li>
+<li>优化网格查询的性能。如何选取网格的大小，以及选择网格排序的方式都能够决定查询的性能好坏。flood使用了一个计算开销的模型来判断查询时间的大小，从而对性能进行评估。</li>
+<li>对于一个给定的数据集，flood提出了四个优化的点：1.对数据集和查询请求进行采样，对RMI模型进行调整。（其实就是保证对于每个维度每个cell中的数据点数量尽量接近，但是最终的cell结果并不是这样，与维度之间的相关性有一定关系）2.迭代的选择网格的排序维度。3.对于每一个可能的维度排序，运行一个梯度下降搜索算法，以找到一个网格大小的最优解，通过上面的开销模型进行计算得到。4.在d个布局中选择目标函数成本最低的布局。</li>
+<li>在计算CDF曲线的时候，使用了PLM，把CDF曲线分割为几段线性函数进行拟合。使用了带有缓存的B树对这些区间以及这些区间中的数据项进行管理。（多维CDF性能并没有好处）</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/14/CS15445-lab2/" rel="prev" title="CS15445-lab2">
+      <i class="fa fa-chevron-left"></i> CS15445-lab2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/29/alex-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" rel="next" title="alex 源码解析">
+      alex 源码解析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%83%B3%E6%B3%95%E6%9D%A5%E6%BA%90"><span class="nav-number">1.</span> <span class="nav-text">想法来源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E6%95%B0%E6%8D%AE%E7%B4%A2%E5%BC%95%E6%80%BB%E7%BB%93%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">传统数据索引总结介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%A6%E6%9C%AF%E7%95%8C%E8%B0%83%E7%A0%94%E7%BB%93%E6%9E%9C"><span class="nav-number">3.</span> <span class="nav-text">学术界调研结果</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description" itemprop="description">已经混了一年研究生的摆子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yux20000304" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yux20000304" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yuxinyang@hust.edu.cn" title="E-Mail → mailto:yuxinyang@hust.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,0' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'e2631b7e4c831f9e25a8',
+      clientSecret: '5ca1a49b2a28ec6f2a80cc9e45ca8243cc839558',
+      repo        : 'blog-comments',
+      owner       : 'yux20000304',
+      admin       : ['yux20000304'],
+      id          : '35d1d12011e8da69b99f910277c12662',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+
+  
+   <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+   <script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+   <script type="text/javascript" src="/js/src/fireworks.js"></script>
+  
+
+
+</body>
+</html>
