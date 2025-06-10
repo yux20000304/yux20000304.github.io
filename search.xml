@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>menu</title>
+      <link href="/2025/05/30/menu/"/>
+      <url>/2025/05/30/menu/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Yuxin-Yang"><a href="#Yuxin-Yang" class="headerlink" title="Yuxin Yang"></a>Yuxin Yang</h1><p>I am currently a graduate student supervised by Fang Wang in Wuhan National Laboratory for Optoelectronics, affiliated with Huazhong University of Science and Technology (HUST). I obtained my bachelor degree from the School of Computer Science at HUST. My research interest lies in database systems(especially in index structures) and distributed file systems. Feel free to email me if you want to contact me.</p><h2 id="Publications"><a href="#Publications" class="headerlink" title="Publications"></a>Publications</h2><ul><li><p><strong>[ICDE 2025] ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems;</strong><br>  <strong>Yuxin Yang</strong>, Fang Wang, Mengya Lei, Peng Zhang, Dan Feng;<br>  In Proceedings of the 41st International Conference on Data Engineering <strong>(ICDE 2025)</strong> <a href="https://www.computer.org/csdl/proceedings-article/icde/2025/360300a086/26FZyUMH3yg">paper</a></p></li><li><p><strong>[ICCD 2023] Low-Latency and Scalable Full-path Indexing Metadata Service for Distributed File Systems;</strong><br>  Chao Dong, Fang Wang*, <strong>Yuxin Yang</strong>, Mengya Lei, Jianshun Zhang, Dan Feng;<br>  In Proceedings of the International Conference on Computer Design <strong>(ICCD 2023, Best Paper Nominee)</strong> <a href="https://ieeexplore.ieee.org/document/10360998">paper</a></p></li></ul><h2 id="Talks"><a href="#Talks" class="headerlink" title="Talks"></a>Talks</h2><ul><li>2025.05, The 41th IEEE International Conference on Data Engineering (ICDE 2025), “ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems”, Hong Kong SAR, China</li></ul>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+  
+  
+</search>
