@@ -1,0 +1,4 @@
+http://example.com/2025/05/30/menu/
+http://example.com/publications/
+http://example.com/talks/
+http://example.com/
