@@ -38,8 +38,10 @@ profiles:
 education:
   - area: PhD in Computer Architecture
     institution: University of California, Santa Cruz
+    date_start: 2025-08-01
+    date_end: 2030-06-30
     summary: |
-      Research Topic: ?
+      Research Topic: Maybe CXL memory systems
     # button:
     #   text: 'Read Thesis'
     #   url: 'https://example.com'
@@ -103,18 +105,19 @@ skills:
     color: '#eeac02'
     color_border: '#f0bf23'
     items:
-      - name: Hiking
+      - name: Badminton
         description: ''
         percent: 60
-        icon: person-simple-walk
-      - name: Cats
-        description: ''
-        percent: 100
-        icon: cat
-      - name: Photography
-        description: ''
-        percent: 80
         icon: camera
+      - name: Sleeping
+        description: ''
+        percent: 20
+        icon: person-simple-walk
+      - name: Clash Royal
+        description: ''
+        percent: 20
+        icon: person-simple-walk
+
         
 # languages:
 #   - name: English
@@ -130,21 +133,20 @@ skills:
 #   Begin multi-line `summary` with YAML's `|` or `|2-` multi-line prefix and indent 2 spaces below.
 awards:
   - title: 'ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems'
-    url: https://www.computer.org/csdl/proceedings-article/icde/2025/360300a086/26FZyUMH3yg
     date: '2025-05-21'
     awarder: 'ICDE 2025'
     summary: |
       **Yuxin Yang**, Fang Wang\*, Mengya Lei, Peng Zhang, Dan Feng;
 
-      We introduce a novel solution which combines the learned index and adaptive radix tree with a hybrid design.
+      We introduce a solution which combines the learned index and adaptive radix tree with a hybrid design. [[paper]](https://www.computer.org/csdl/proceedings-article/icde/2025/360300a086/26FZyUMH3yg) [[slides]](uploads/icde25_slides.pdf)
+
   - title: 'Low-Latency and Scalable Full-path Indexing Metadata Service for Distributed File Systems'
-    url: https://ieeexplore.ieee.org/document/10360998
     date: '2023-11-08'
     awarder: 'ICCD 2023 (Best Paper Nominee)'
     summary: |
       Chao Dong, Fang Wang\*, **Yuxin Yang**, Mengya Lei, Jianshun Zhang, Dan Feng;
       
-      We introduce a novel metadata management for distributed file systems.
+      We introduce a metadata management for distributed file systems. [[paper]](https://ieeexplore.ieee.org/document/10360998)
 #   - title: Blockchain Fundamentals
 #     url: https://www.edx.org/professional-certificate/uc-berkeleyx-blockchain-fundamentals
 #     date: '2023-07-01'
