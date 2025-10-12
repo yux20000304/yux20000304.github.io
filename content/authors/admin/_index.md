@@ -1,6 +1,6 @@
 ---
 # Display name
-title: 杨雨鑫
+title: Yuxin Yang
 
 # Name pronunciation (optional)
 # name_pronunciation: Chien Shiung Wu
@@ -34,6 +34,8 @@ profiles:
     url: https://github.com/yux20000304 
   - icon: brands/linkedin
     url: https://www.linkedin.com/in/yuxin-yang-6371a5345
+  - icon: brands/google-scholar
+    url: https://scholar.google.com/citations?user=-fEn4QcAAAAJ&hl=zh-CN
 
 education:
   - area: PhD in Computer Architecture
@@ -41,7 +43,7 @@ education:
     date_start: 2025-08-01
     date_end: 2030-06-30
     summary: |
-      Research Topic: Maybe CXL memory systems
+      Research Topic: Security for CXL memory systems
     # button:
     #   text: 'Read Thesis'
     #   url: 'https://example.com'
@@ -138,7 +140,7 @@ awards:
     summary: |
       **Yuxin Yang**, Fang Wang\*, Mengya Lei, Peng Zhang, Dan Feng;
 
-      We introduce a solution which combines the learned index and adaptive radix tree with a hybrid design. [[paper]](https://www.computer.org/csdl/proceedings-article/icde/2025/360300a086/26FZyUMH3yg) [[slides]](uploads/icde25_slides.pdf)
+      We introduce a solution which combines the learned index and adaptive radix tree with a hybrid design. [[paper]](uploads/ALT-Index_A_Hybrid_Learned_Index_for_Concurrent_Memory_Database_Systems.pdf) [[slides]](uploads/icde25_slides.pdf)
 
   - title: 'Low-Latency and Scalable Full-path Indexing Metadata Service for Distributed File Systems'
     date: '2023-11-08'
@@ -146,7 +148,7 @@ awards:
     summary: |
       Chao Dong, Fang Wang\*, **Yuxin Yang**, Mengya Lei, Jianshun Zhang, Dan Feng;
       
-      We introduce a metadata management for distributed file systems. [[paper]](https://ieeexplore.ieee.org/document/10360998)
+      We introduce a metadata management for distributed file systems. [[paper]](uploads/Low-Latency_and_Scalable_Full-path_Indexing_Metadata_Service_for_Distributed_File_Systems.pdf)
 #   - title: Blockchain Fundamentals
 #     url: https://www.edx.org/professional-certificate/uc-berkeleyx-blockchain-fundamentals
 #     date: '2023-07-01'
@@ -167,7 +169,7 @@ awards:
 #       Object-oriented programming (OOP) lets you specify relationships between functions and the objects that they can act on, helping you manage complexity in your code. This is an intermediate level course, providing an introduction to OOP, using the S3 and R6 systems. S3 is a great day-to-day R programming tool that simplifies some of the functions that you write. R6 is especially useful for industry-specific analyses, working with web APIs, and building GUIs.
 ---
 
-I am a Ph.D student of Department of Computer Science and Engineering at University of California Santa Cruz supervised by [Prof. Yuanchao Xu](https://yuanchaoxu6.github.io/). 
+I am a Ph.D student of Department of Computer Science and Engineering at University of California Santa Cruz advised by [Prof. Yuanchao Xu](https://yuanchaoxu6.github.io/). 
 I received a master degree from Wuhan National Laboratory for Optoelectronics at Huazhong University of Science and Technology (HUST), advised by [Prof. Fang Wang](http://faculty.hust.edu.cn/wangfang16/en/index.htm) and [Prof. Dan Feng](http://faculty.hust.edu.cn/dfeng/en/index.htm). 
 I also obtained my bachelor degree from the School of Computer Science at HUST. 
 My research interest lies in memory systems and distributed file systems. 
