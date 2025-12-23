@@ -45,6 +45,13 @@ jobs:
     - name: Setup Pages
       id: pages
       uses: actions/configure-pages@v5
+    - name: Inject GA measurement ID
+      if: ${{ secrets.GA_MEASUREMENT_ID != '' }}
+      env:
+        GA_MEASUREMENT_ID: ${{ secrets.GA_MEASUREMENT_ID }}
+      run: |
+        mkdir -p config/production
+        printf "marketing:\n  analytics:\n    google_analytics: '%s'\n" "$GA_MEASUREMENT_ID" > config/production/params.yaml
     - name: Build with Hugo
       env:
         HUGO_ENVIRONMENT: production
