@@ -1,0 +1,43 @@
+{{/* Custom community blox: talks */}}
+{{ $page := .wcPage }}
+{{ $block := .wcBlock }}
+{{ $author := $block.content.username | default "admin" }}
+
+{{ $person_page_path := (printf "/authors/%s" $author) }}
+{{ $person_page := site.GetPage $person_page_path }}
+{{ if not $person_page }}
+{{ errorf "Could not find an author page at `%s`. Please check the `username` in your talks block." $person_page_path }}
+{{ end }}
+{{ $talks := $person_page.Params.talks }}
+
+<div class="flex flex-col items-center max-w-prose mx-auto gap-3 justify-center">
+  <div class="mb-6 text-3xl font-bold text-gray-900 dark:text-white">
+    {{ $block.content.title | default "Talks" | markdownify | emojify }}
+  </div>
+
+  {{ with $block.content.text }}<p>{{ . | markdownify | emojify }}</p>{{ end }}
+
+  <div class="w-full flex flex-col gap-6">
+    {{ if $talks }}
+      {{ range sort $talks ".date" "desc" }}
+        <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+          {{ with .url }}<a href="{{ . }}" target="_blank" rel="noopener">{{ end }}
+            <h5 class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">{{ .title | markdownify | emojify }}</h5>
+          {{ with .url }}</a>{{ end }}
+
+          <div class="block mb-3 text-sm font-normal leading-none text-gray-500 dark:text-gray-300">
+            {{ with .awarder }}{{ . }}{{ end }}
+            {{ if and .awarder .date }} &#8729; {{ end }}
+            {{ if .date }}
+              {{ (time .date) | time.Format ($block.design.date_format | default "January 2006") }}
+            {{ end }}
+          </div>
+
+          {{ with .summary }}
+            <div class="mb-3 font-normal text-gray-500 dark:text-gray-400 prose">{{ . | markdownify | emojify }}</div>
+          {{ end }}
+        </div>
+      {{ end }}
+    {{ end }}
+  </div>
+</div>

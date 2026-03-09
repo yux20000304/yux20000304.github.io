@@ -53,6 +53,7 @@
       "blox-resume-biography",
       "blox-resume-experience",
       "blox-resume-skills",
+      "blox-talks",
       "border",
       "border-gray-200",
       "border-s",
@@ -204,6 +205,7 @@
       "section-resume-biography",
       "section-resume-experience",
       "section-resume-skills",
+      "section-talks",
       "sun",
       "top"
     ]

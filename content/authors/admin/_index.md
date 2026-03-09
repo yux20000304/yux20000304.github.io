@@ -149,6 +149,19 @@ awards:
       Chao Dong, Fang Wang\*, **Yuxin Yang**, Mengya Lei, Jianshun Zhang, Dan Feng;
       
       We introduce a metadata management for distributed file systems. [[paper]](uploads/Low-Latency_and_Scalable_Full-path_Indexing_Metadata_Service_for_Distributed_File_Systems.pdf)
+
+talks:
+  - title: 'AIORE: Efficient Security Support for CXL Memory through Adaptive Incremental Offloaded (Re-)Encryption'
+    date: '2026-03-09'
+    awarder: 'NVMW 2026'
+    summary: |
+      **Yuxin Yang** presented this work at NVMW 2026.
+  - title: 'ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems'
+    url: /uploads/icde25_slides.pdf
+    date: '2025-05-21'
+    awarder: 'ICDE 2025'
+    summary: |
+      **Yuxin Yang** presented this talk at ICDE 2025. [[slides]](/uploads/icde25_slides.pdf)
 #   - title: Blockchain Fundamentals
 #     url: https://www.edx.org/professional-certificate/uc-berkeleyx-blockchain-fundamentals
 #     date: '2023-07-01'

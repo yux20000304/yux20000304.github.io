@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Events | yyx&#39;s personal website</title>
+    <link>http://localhost:1313/event/</link>
+      <atom:link href="http://localhost:1313/event/index.xml" rel="self" type="application/rss+xml" />
+    <description>Events</description>
+    <generator>Hugo Blox Builder (https://hugoblox.com)</generator><language>en-us</language><lastBuildDate>Wed, 21 May 2025 14:00:00 +0800</lastBuildDate>
+    <image>
+      <url>http://localhost:1313/media/icon_hu_645fa481986063ef.png</url>
+      <title>Events</title>
+      <link>http://localhost:1313/event/</link>
+    </image>
+    
+    <item>
+      <title>ICDE 2025 Talk: ALT-index</title>
+      <link>http://localhost:1313/event/icde-2025-talk/</link>
+      <pubDate>Wed, 21 May 2025 14:00:00 +0800</pubDate>
+      <guid>http://localhost:1313/event/icde-2025-talk/</guid>
+      <description>&lt;p&gt;Slides: &lt;a href=&#34;http://localhost:1313/uploads/icde25_slides.pdf&#34;&gt;ICDE 2025 Slides&lt;/a&gt;&lt;br&gt;
+Paper: &lt;a href=&#34;http://localhost:1313/uploads/ALT-Index_A_Hybrid_Learned_Index_for_Concurrent_Memory_Database_Systems.pdf&#34;&gt;ALT-index Paper&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

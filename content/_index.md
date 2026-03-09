@@ -41,4 +41,8 @@ sections:
     content:
       title: Publications
       username: admin
+  - block: talks
+    content:
+      title: Talks
+      username: admin
 ---
