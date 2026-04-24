@@ -62,6 +62,16 @@ education:
     summary: |
       GPA: 88.9/100
 
+work:
+  - position: Teaching Assistant
+    company_name: University of California, Santa Cruz
+    company_url: ''
+    company_logo: ''
+    date_start: 2026-03-01
+    date_end: ''
+    summary: |
+      Teaching Assistant for CSE 121 (Embedded System Design).
+
 # work:
 #   - position: Director of Cloud Infrastructure
 #     company_name: GenCoin
@@ -182,7 +192,7 @@ talks:
 #       Object-oriented programming (OOP) lets you specify relationships between functions and the objects that they can act on, helping you manage complexity in your code. This is an intermediate level course, providing an introduction to OOP, using the S3 and R6 systems. S3 is a great day-to-day R programming tool that simplifies some of the functions that you write. R6 is especially useful for industry-specific analyses, working with web APIs, and building GUIs.
 ---
 
-I am a Ph.D student of Department of Computer Science and Engineering at University of California Santa Cruz advised by [Prof. Yuanchao Xu](https://yuanchaoxu6.github.io/). 
+I am a first year Ph.D student of Department of Computer Science and Engineering at University of California Santa Cruz advised by [Prof. Yuanchao Xu](https://yuanchaoxu6.github.io/). 
 I received a master degree from Wuhan National Laboratory for Optoelectronics at Huazhong University of Science and Technology (HUST), advised by [Prof. Fang Wang](http://faculty.hust.edu.cn/wangfang16/en/index.htm) and [Prof. Dan Feng](http://faculty.hust.edu.cn/dfeng/en/index.htm). 
 I also obtained my bachelor degree from the School of Computer Science at HUST. 
 My research interest lies in memory systems and distributed file systems. 
