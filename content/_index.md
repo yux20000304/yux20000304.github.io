@@ -25,6 +25,12 @@ sections:
       biography:
         # Customize the style of your biography text
         style: 'text-align: justify; font-size: 0.8em;'
+  - block: news
+    content:
+      title: News
+      username: admin
+    design:
+      date_format: 'Jan 2, 2006'
   - block: experience
     content:
       username: admin
@@ -45,4 +51,6 @@ sections:
     content:
       title: Talks
       username: admin
+    design:
+      date_format: 'Jan 2006'
 ---

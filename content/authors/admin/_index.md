@@ -72,6 +72,20 @@ work:
     summary: |
       Teaching Assistant for CSE 121 (Embedded System Design).
 
+news:
+  - title: 'Presented AIORE at NVMW 2026.'
+    date: '2026-03-09'
+    summary: |
+      Talk: AIORE: Efficient Security Support for CXL Memory through Adaptive Incremental Offloaded (Re-)Encryption.
+  - title: 'ALT-index was accepted to ICDE 2025.'
+    date: '2024-11-27'
+    summary: |
+      Paper and slides are available on this site.
+  - title: 'Full-path Indexing Metadata Service was nominated for Best Paper at ICCD 2023.'
+    date: '2023-11-08'
+    summary: |
+      Work on low-latency metadata management for distributed file systems.
+
 # work:
 #   - position: Director of Cloud Infrastructure
 #     company_name: GenCoin

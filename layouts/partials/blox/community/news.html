@@ -1,0 +1,48 @@
+{{/* Custom community blox: news */}}
+{{ $page := .wcPage }}
+{{ $block := .wcBlock }}
+{{ $author := $block.content.username | default "admin" }}
+
+{{ $person_page_path := (printf "/authors/%s" $author) }}
+{{ $person_page := site.GetPage $person_page_path }}
+{{ if not $person_page }}
+{{ errorf "Could not find an author page at `%s`. Please check the `username` in your news block." $person_page_path }}
+{{ end }}
+{{ $news := $person_page.Params.news }}
+{{ $date_format := $block.design.date_format | default "Jan 2, 2006" }}
+
+<div class="w-full max-w-prose mx-auto">
+  <h2 class="mb-4 text-3xl font-bold text-gray-900 dark:text-white">
+    {{ $block.content.title | default "News" | markdownify | emojify }}
+  </h2>
+
+  {{ with $block.content.text }}<p class="mb-4 text-gray-600 dark:text-gray-300">{{ . | markdownify | emojify }}</p>{{ end }}
+
+  {{ if $news }}
+    <ol class="w-full">
+      {{ $sorted_news := sort $news ".date" "desc" }}
+      {{ $last_index := sub (len $sorted_news) 1 }}
+      {{ range $index, $item := $sorted_news }}
+        {{ if ne $index $last_index }}
+          <li class="mb-4 border-b border-gray-200 pb-4 dark:border-gray-700">
+        {{ else }}
+          <li>
+        {{ end }}
+          {{ if $item.date }}
+            <time class="block text-sm font-normal leading-none text-gray-500 dark:text-gray-300">
+              {{ (time $item.date) | time.Format $date_format }}
+            </time>
+          {{ end }}
+
+          <div class="mt-1 font-medium text-gray-900 dark:text-white">
+            {{ $item.title | markdownify | emojify }}
+          </div>
+
+          {{ with $item.summary }}
+            <div class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">{{ . | markdownify | emojify }}</div>
+          {{ end }}
+        </li>
+      {{ end }}
+    </ol>
+  {{ end }}
+</div>
