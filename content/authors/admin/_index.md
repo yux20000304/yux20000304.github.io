@@ -73,15 +73,19 @@ work:
       Teaching Assistant for CSE 121 (Embedded System Design).
 
 news:
+  - title: 'Decoupled-DSM is accepted to MICRO 2026'
+    date: '2026-07-08'
+    summary: |
+      Decoupled-DSM is designed for TEE extension for Multi-Host CXL memory.
   - title: 'Presented AIORE at NVMW 2026.'
     date: '2026-03-09'
     summary: |
       Talk: AIORE: Efficient Security Support for CXL Memory through Adaptive Incremental Offloaded (Re-)Encryption.
-  - title: 'ALT-index was accepted to ICDE 2025.'
+  - title: 'ALT-index is accepted to ICDE 2025.'
     date: '2024-11-27'
     summary: |
       Paper and slides are available on this site.
-  - title: 'Full-path Indexing Metadata Service was nominated for Best Paper at ICCD 2023.'
+  - title: 'Full-path Indexing Metadata Service is nominated for Best Paper at ICCD 2023.'
     date: '2023-11-08'
     summary: |
       Work on low-latency metadata management for distributed file systems.
@@ -153,14 +157,20 @@ skills:
 #   - name: Portuguese
 #     percent: 25
 
-# Awards.
-#   Add/remove as many awards below as you like.
-#   Only `title`, `awarder`, and `date` are required.
+# Publications.
+#   Add/remove as many publications below as you like.
+#   Only `title`, `venue`, and `date` are required.
 #   Begin multi-line `summary` with YAML's `|` or `|2-` multi-line prefix and indent 2 spaces below.
-awards:
+publications:
+  - title: 'Decoupled-DSM: A Scalable Secure Trusted Execution Environment for Multi-Host CXL Disaggregated Shared Memory'
+    date: '2026-01-01'
+    venue: 'The 59th IEEE/ACM International Symposium on Microarchitecture (MICRO), 2026'
+    summary: |
+      **Yuxin Yang**, Yuanchao Xu.
+
   - title: 'ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems'
     date: '2025-05-21'
-    awarder: 'ICDE 2025'
+    venue: 'The 41st IEEE International Conference on Data Engineering (ICDE), 2025'
     summary: |
       **Yuxin Yang**, Fang Wang\*, Mengya Lei, Peng Zhang, Dan Feng;
 
@@ -168,7 +178,7 @@ awards:
 
   - title: 'Low-Latency and Scalable Full-path Indexing Metadata Service for Distributed File Systems'
     date: '2023-11-08'
-    awarder: 'ICCD 2023 (Best Paper Nominee)'
+    venue: 'The 41st IEEE International Conference on Computer Design (ICCD), 2023 (Best Paper Nominee)'
     summary: |
       Chao Dong, Fang Wang\*, **Yuxin Yang**, Mengya Lei, Jianshun Zhang, Dan Feng;
       
