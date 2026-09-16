@@ -68,27 +68,31 @@ work:
     company_url: ''
     company_logo: ''
     date_start: 2026-03-01
-    date_end: ''
+    date_end: 2026-06-30
     summary: |
       Teaching Assistant for CSE 121 (Embedded System Design).
 
 news:
-  - title: 'Decoupled-DSM is accepted to MICRO 2026'
+  - title: 'Decoupled-DSM accepted to MICRO 2026'
     date: '2026-07-08'
+    category: 'Publication'
     summary: |
-      Decoupled-DSM is designed for TEE extension for Multi-Host CXL memory.
-  - title: 'Presented AIORE at NVMW 2026.'
+      Our work introduces a scalable trusted execution environment for multi-host CXL disaggregated shared memory.
+  - title: 'AIORE presented at NVMW 2026'
     date: '2026-03-09'
+    category: 'Talk'
     summary: |
-      Talk: AIORE: Efficient Security Support for CXL Memory through Adaptive Incremental Offloaded (Re-)Encryption.
-  - title: 'ALT-index is accepted to ICDE 2025.'
+      I presented our work on adaptive incremental offloaded (re-)encryption for secure CXL memory.
+  - title: 'ALT-index accepted to ICDE 2025'
     date: '2024-11-27'
+    category: 'Publication'
     summary: |
-      Paper and slides are available on this site.
-  - title: 'Full-path Indexing Metadata Service is nominated for Best Paper at ICCD 2023.'
+      Our hybrid learned index for concurrent in-memory database systems will appear at ICDE 2025. [[Paper]](/uploads/ALT-Index_A_Hybrid_Learned_Index_for_Concurrent_Memory_Database_Systems.pdf) [[Slides]](/uploads/icde25_slides.pdf)
+  - title: 'Best Paper nomination at ICCD 2023'
     date: '2023-11-08'
+    category: 'Award'
     summary: |
-      Work on low-latency metadata management for distributed file systems.
+      Our work on low-latency, scalable metadata management for distributed file systems was nominated for Best Paper. [[Paper]](/uploads/Low-Latency_and_Scalable_Full-path_Indexing_Metadata_Service_for_Distributed_File_Systems.pdf)
 
 # work:
 #   - position: Director of Cloud Infrastructure
@@ -216,8 +220,9 @@ talks:
 #       Object-oriented programming (OOP) lets you specify relationships between functions and the objects that they can act on, helping you manage complexity in your code. This is an intermediate level course, providing an introduction to OOP, using the S3 and R6 systems. S3 is a great day-to-day R programming tool that simplifies some of the functions that you write. R6 is especially useful for industry-specific analyses, working with web APIs, and building GUIs.
 ---
 
-I am a first year Ph.D student of Department of Computer Science and Engineering at University of California Santa Cruz advised by [Prof. Yuanchao Xu](https://yuanchaoxu6.github.io/). 
-I received a master degree from Wuhan National Laboratory for Optoelectronics at Huazhong University of Science and Technology (HUST), advised by [Prof. Fang Wang](http://faculty.hust.edu.cn/wangfang16/en/index.htm) and [Prof. Dan Feng](http://faculty.hust.edu.cn/dfeng/en/index.htm). 
-I also obtained my bachelor degree from the School of Computer Science at HUST. 
-My research interest lies in memory systems and distributed file systems. 
-Feel free to email me if you want to contact me.
+I am a second-year Ph.D. student in the Department of Computer Science and Engineering at the University of California, Santa Cruz, advised by [Prof. Yuanchao Xu](https://yuanchaoxu6.github.io/).
+My research focuses on computer architecture and systems, with particular interests in secure memory systems, CXL-based memory disaggregation, trusted execution environments, and distributed file systems.
+
+Before joining UCSC, I received my master's degree from the Wuhan National Laboratory for Optoelectronics at Huazhong University of Science and Technology (HUST), where I was advised by [Prof. Fang Wang](http://faculty.hust.edu.cn/wangfang16/en/index.htm) and [Prof. Dan Feng](http://faculty.hust.edu.cn/dfeng/en/index.htm). I also received my bachelor's degree in Computer Science from HUST.
+
+Please feel free to contact me by email.
