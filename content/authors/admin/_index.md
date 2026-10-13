@@ -73,6 +73,11 @@ work:
       Teaching Assistant for CSE 121 (Embedded System Design).
 
 news:
+  - title: 'Received a MICRO 2026 Student Travel Grant'
+    date: '2026-10-13' # Homepage announcement date.
+    category: 'Award'
+    summary: |
+      The grant supports my attendance at MICRO 2026.
   - title: 'ALT-index+ accepted to ACM TOS'
     date: '2026-10-13' # Homepage announcement date.
     category: 'Publication'
