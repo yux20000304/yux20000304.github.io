@@ -28,7 +28,7 @@ role: PhD student at UCSC
 # Need to use another icon? Simply download the SVG icon to your `assets/media/icons/` folder.
 profiles:
   - icon: at-symbol
-    url: https://yyang460@ucsc.edu
+    url: mailto:yyang460@ucsc.edu
     label: E-mail Me
   - icon: brands/github
     url: https://github.com/yux20000304 
@@ -73,6 +73,11 @@ work:
       Teaching Assistant for CSE 121 (Embedded System Design).
 
 news:
+  - title: 'ALT-index+ accepted to ACM TOS'
+    date: '2026-10-13' # Homepage announcement date.
+    category: 'Publication'
+    summary: |
+      Our extended ALT-index work adds non-blocking retraining and parallel bulkloading for concurrent memory systems.
   - title: 'Decoupled-DSM accepted to MICRO 2026'
     date: '2026-07-08'
     category: 'Publication'
@@ -164,29 +169,51 @@ skills:
 # Publications.
 #   Add/remove as many publications below as you like.
 #   Only `title`, `venue`, and `date` are required.
+#   Optional: `venue_short`, `authors` (Markdown), `award`, `status`, and `links` (name/url).
 #   Begin multi-line `summary` with YAML's `|` or `|2-` multi-line prefix and indent 2 spaces below.
 publications:
+  - title: 'ALT-index+: An Efficient Hybrid Learned Index for Concurrent Memory Systems'
+    date: '2026-10-13' # Homepage update date; formal publication date pending.
+    venue_short: 'TOS'
+    venue: 'ACM Transactions on Storage (TOS)'
+    status: 'Accepted'
+    authors: 'Mengya Lei, **Yuxin Yang**, Fang Wang\*, Zhiwei Ye, Dan Feng.'
+    summary: |
+      Extends ALT-index with non-blocking retraining and parallel bulkloading for concurrent memory systems.
+
   - title: 'Decoupled-DSM: A Scalable Secure Trusted Execution Environment for Multi-Host CXL Disaggregated Shared Memory'
     date: '2026-01-01'
+    venue_short: 'MICRO'
     venue: 'The 59th IEEE/ACM International Symposium on Microarchitecture (MICRO), 2026'
+    status: 'Accepted'
+    authors: '**Yuxin Yang**, Yuanchao Xu.'
     summary: |
-      **Yuxin Yang**, Yuanchao Xu.
+      Keeps memory allocation on CXL devices and offloads permission checks to host-side trusted execution environments for secure multi-host shared memory.
 
   - title: 'ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems'
     date: '2025-05-21'
+    venue_short: 'ICDE'
     venue: 'The 41st IEEE International Conference on Data Engineering (ICDE), 2025'
+    authors: '**Yuxin Yang**, Fang Wang\*, Mengya Lei, Peng Zhang, Dan Feng;'
     summary: |
-      **Yuxin Yang**, Fang Wang\*, Mengya Lei, Peng Zhang, Dan Feng;
-
-      We introduce a solution which combines the learned index and adaptive radix tree with a hybrid design. [[paper]](uploads/ALT-Index_A_Hybrid_Learned_Index_for_Concurrent_Memory_Database_Systems.pdf) [[slides]](uploads/icde25_slides.pdf)
+      We introduce a solution which combines the learned index and adaptive radix tree with a hybrid design.
+    links:
+      - name: Paper
+        url: /uploads/ALT-Index_A_Hybrid_Learned_Index_for_Concurrent_Memory_Database_Systems.pdf
+      - name: Slides
+        url: /uploads/icde25_slides.pdf
 
   - title: 'Low-Latency and Scalable Full-path Indexing Metadata Service for Distributed File Systems'
     date: '2023-11-08'
-    venue: 'The 41st IEEE International Conference on Computer Design (ICCD), 2023 (Best Paper Nominee)'
+    venue_short: 'ICCD'
+    venue: 'The 41st IEEE International Conference on Computer Design (ICCD), 2023'
+    award: 'Best Paper Nominee'
+    authors: 'Chao Dong, Fang Wang\*, **Yuxin Yang**, Mengya Lei, Jianshun Zhang, Dan Feng;'
     summary: |
-      Chao Dong, Fang Wang\*, **Yuxin Yang**, Mengya Lei, Jianshun Zhang, Dan Feng;
-      
-      We introduce a metadata management for distributed file systems. [[paper]](uploads/Low-Latency_and_Scalable_Full-path_Indexing_Metadata_Service_for_Distributed_File_Systems.pdf)
+      We introduce a metadata management for distributed file systems.
+    links:
+      - name: Paper
+        url: /uploads/Low-Latency_and_Scalable_Full-path_Indexing_Metadata_Service_for_Distributed_File_Systems.pdf
 
 talks:
   - title: 'AIORE: Efficient Security Support for CXL Memory through Adaptive Incremental Offloaded (Re-)Encryption'
