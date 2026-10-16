@@ -152,15 +152,15 @@ skills:
       - name: Badminton
         description: ''
         percent: 60
-        icon: camera
+        icon: custom/shuttlecock
       - name: Sleeping
         description: ''
         percent: 20
-        icon: person-simple-walk
-      - name: Clash Royal
+        icon: moon
+      - name: Clash Royale
         description: ''
         percent: 20
-        icon: person-simple-walk
+        icon: custom/crown
 
         
 # languages:
