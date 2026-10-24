@@ -27,9 +27,9 @@ role: PhD student at UCSC
 # Social network links
 # Need to use another icon? Simply download the SVG icon to your `assets/media/icons/` folder.
 profiles:
-  - icon: at-symbol
+  - icon: envelope
     url: mailto:yyang460@ucsc.edu
-    label: E-mail Me
+    label: 'Email: yyang460@ucsc.edu'
   - icon: brands/github
     url: https://github.com/yux20000304 
   - icon: brands/linkedin
