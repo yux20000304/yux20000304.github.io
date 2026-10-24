@@ -1,0 +1,5 @@
+{{/* Enhance the profile email link while retaining mailto as the no-JS fallback. */}}
+{{ if .IsHome }}
+  {{ $script := resources.Get "js/email-contact.js" | minify | fingerprint "sha256" }}
+  <script src="{{ $script.RelPermalink }}" defer></script>
+{{ end }}

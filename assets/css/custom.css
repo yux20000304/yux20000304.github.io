@@ -1,3 +1,99 @@
+/* Email disclosure below the profile's social links. */
+.email-contact-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  cursor: pointer;
+}
+
+.email-contact {
+  width: min(100% - 2rem, 22rem);
+  margin: 1rem auto;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  color: #172033;
+  text-align: center;
+}
+
+.email-contact-address {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.email-contact-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.email-contact-copy {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.375rem;
+  background: rgb(var(--color-primary-700));
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.email-contact-copy:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.email-contact-open {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: rgb(var(--color-primary-700));
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.email-contact-status {
+  margin: 0.625rem 0 0;
+  color: #586579;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.email-contact-status:empty {
+  margin: 0;
+}
+
+.email-contact-toggle:focus-visible,
+.email-contact button:focus-visible,
+.email-contact a:focus-visible {
+  outline: 2px solid rgb(var(--color-primary-600));
+  outline-offset: 4px;
+}
+
+.dark .email-contact {
+  border-color: #344155;
+  background: #1f2937;
+  color: #edf2f7;
+}
+
+.dark .email-contact-open,
+.dark .email-contact-status {
+  color: rgb(var(--color-primary-200));
+}
+
+.dark .email-contact-toggle:focus-visible,
+.dark .email-contact button:focus-visible,
+.dark .email-contact a:focus-visible {
+  outline-color: rgb(var(--color-primary-300));
+}
+
 /* Publications: scoped styles for the custom Hugo Blox section. */
 .publications {
   --pub-text: #172033;
