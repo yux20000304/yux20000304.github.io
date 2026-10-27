@@ -49,6 +49,12 @@ sections:
       username: admin
     design:
       date_format: 'Jan 2006'
+  - block: markdown
+    id: academic-service
+    content:
+      title: Academic Service
+      text: |-
+        **Reviewer**, IEEE Transactions on Computers
   - block: skills
     content:
       title: Skills & Hobbies

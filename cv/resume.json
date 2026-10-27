@@ -1,0 +1,119 @@
+{
+  "updated": "October 27, 2026",
+  "name": "Yuxin Yang",
+  "email": "yyang460@ucsc.edu",
+  "phone": "831-325-5770",
+  "website": "https://yux20000304.github.io/",
+  "scholar": "https://scholar.google.com/citations?user=-fEn4QcAAAAJ&hl=en",
+  "summary": "Second-year Ph.D. student in the Department of Computer Science and Engineering at the University of California, Santa Cruz, advised by Prof. Yuanchao Xu. Research interests include secure memory systems, CXL-based memory disaggregation, trusted execution environments, learned indexes, and distributed file systems.",
+  "education": [
+    {
+      "institution": "University of California, Santa Cruz",
+      "degree": "Ph.D. in Computer Science",
+      "dates": "Aug. 2025 - Present",
+      "detail": "Advisor: Prof. Yuanchao Xu | Research: computer architecture and secure CXL memory systems"
+    },
+    {
+      "institution": "Huazhong University of Science and Technology",
+      "degree": "M.S. in Computer Architecture",
+      "dates": "Sept. 2022 - June 2025",
+      "detail": "Advisors: Prof. Fang Wang and Prof. Dan Feng | Average score: 87.3/100"
+    },
+    {
+      "institution": "Huazhong University of Science and Technology",
+      "degree": "B.E. in Computer Science",
+      "dates": "Sept. 2018 - June 2022",
+      "detail": "Average score: 88.9/100"
+    }
+  ],
+  "publications": [
+    {
+      "authors": ["Mengya Lei", "Yuxin Yang", "Fang Wang", "Zhiwei Ye", "Dan Feng"],
+      "title": "ALT-index+: An Efficient Hybrid Learned Index for Concurrent Memory Systems",
+      "venue": "ACM Transactions on Storage (TOS)",
+      "year": "2026",
+      "note": "Accepted; publication details pending."
+    },
+    {
+      "authors": ["Yuxin Yang", "Yuanchao Xu"],
+      "title": "Decoupled-DSM: A Scalable Secure Trusted Execution Environment for Multi-Host CXL Disaggregated Shared Memory",
+      "venue": "59th IEEE/ACM International Symposium on Microarchitecture (MICRO)",
+      "year": "2026",
+      "note": "Accepted."
+    },
+    {
+      "authors": ["Yuxin Yang", "Fang Wang", "Mengya Lei", "Peng Zhang", "Dan Feng"],
+      "title": "ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems",
+      "venue": "41st IEEE International Conference on Data Engineering (ICDE)",
+      "year": "2025"
+    },
+    {
+      "authors": ["Chao Dong", "Fang Wang", "Yuxin Yang", "Mengya Lei", "Jianshun Zhang", "Dan Feng"],
+      "title": "Low-Latency and Scalable Full-path Indexing Metadata Service for Distributed File Systems",
+      "venue": "41st IEEE International Conference on Computer Design (ICCD)",
+      "year": "2023",
+      "note": "Best Paper Nomination."
+    }
+  ],
+  "research": [
+    {
+      "title": "Secure CXL memory systems",
+      "institution": "University of California, Santa Cruz",
+      "dates": "",
+      "bullets": [
+        "Decoupled-DSM provides a trusted execution environment for multi-host CXL disaggregated shared memory; accepted to MICRO 2026.",
+        "AIORE studies adaptive incremental offloaded (re-)encryption for secure CXL memory; presented at NVMW 2026."
+      ]
+    },
+    {
+      "title": "A hybrid index structure for memory systems",
+      "institution": "Huazhong University of Science and Technology",
+      "dates": "Oct. 2022 - Apr. 2025",
+      "bullets": [
+        "Introduced ALT-index, a hybrid learned index for concurrent memory systems (ICDE 2025).",
+        "Improved performance by up to 1.9x-2.3x compared with existing indexes."
+      ]
+    },
+    {
+      "title": "A resizing scheme for file systems",
+      "institution": "Huazhong University of Science and Technology",
+      "dates": "Oct. 2023 - Dec. 2024",
+      "bullets": [
+        "Designed a head-shrinking scheme for a flash-friendly file system, reducing average resizing time from 60 to 15 minutes."
+      ]
+    },
+    {
+      "title": "Low-latency metadata service for distributed file systems",
+      "institution": "Huazhong University of Science and Technology",
+      "dates": "Mar. 2022 - Sept. 2022",
+      "bullets": [
+        "Proposed Duplex, an indexed metadata service, with performance improvements of up to 7.6x / 2.3x over existing solutions (ICCD 2023, Best Paper Nomination)."
+      ]
+    }
+  ],
+  "teaching": {
+    "title": "Teaching Assistant, CSE 121: Embedded System Design",
+    "institution": "University of California, Santa Cruz",
+    "dates": "Mar. 2026 - June 2026"
+  },
+  "service": [
+    {"role": "Reviewer", "venue": "IEEE Transactions on Computers"}
+  ],
+  "talks": [
+    {
+      "title": "AIORE: Efficient Security Support for CXL Memory through Adaptive Incremental Offloaded (Re-)Encryption",
+      "venue": "NVMW 2026",
+      "date": "Mar. 9, 2026"
+    },
+    {
+      "title": "ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems",
+      "venue": "ICDE 2025",
+      "date": "May 21, 2025"
+    }
+  ],
+  "awards": [
+    {"title": "MICRO Student Travel Grant", "year": "2026"},
+    {"title": "Best Paper Nomination, ICCD", "year": "2023"}
+  ],
+  "skills": "C, C++, Python, Java"
+}
