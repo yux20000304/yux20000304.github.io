@@ -48,7 +48,7 @@ sections:
       title: Talks
       username: admin
     design:
-      date_format: 'Jan 2006'
+      date_format: 'Jan 2, 2006'
   - block: markdown
     id: academic-service
     content:

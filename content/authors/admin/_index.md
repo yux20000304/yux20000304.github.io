@@ -224,6 +224,11 @@ publications:
         url: /uploads/Low-Latency_and_Scalable_Full-path_Indexing_Metadata_Service_for_Distributed_File_Systems.pdf
 
 talks:
+  - title: 'Decoupled-DSM: A Scalable Secure Trusted Execution Environment for Multi-Host CXL Disaggregated Shared Memory'
+    date: '2026-11-04'
+    awarder: 'MICRO 2026'
+    summary: |
+      **Yuxin Yang** presented this work at MICRO 2026 in Athens, Greece. [[Paper]](/uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf)
   - title: 'AIORE: Efficient Security Support for CXL Memory through Adaptive Incremental Offloaded (Re-)Encryption'
     date: '2026-03-09'
     awarder: 'NVMW 2026'
