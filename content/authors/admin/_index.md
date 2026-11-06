@@ -87,7 +87,7 @@ news:
     date: '2026-07-08'
     category: 'Publication'
     summary: |
-      Our work introduces a scalable trusted execution environment for multi-host CXL disaggregated shared memory.
+      Our work introduces a scalable trusted execution environment for multi-host CXL disaggregated shared memory. [[Paper]](/uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf)
   - title: 'AIORE presented at NVMW 2026'
     date: '2026-03-09'
     category: 'Talk'
@@ -194,6 +194,9 @@ publications:
     authors: '**Yuxin Yang**, Yuanchao Xu.'
     summary: |
       Keeps memory allocation on CXL devices and offloads permission checks to host-side trusted execution environments for secure multi-host shared memory.
+    links:
+      - name: Paper
+        url: /uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf
 
   - title: 'ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems'
     date: '2025-05-21'
