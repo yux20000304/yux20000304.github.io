@@ -87,7 +87,7 @@ news:
     date: '2026-07-08'
     category: 'Publication'
     summary: |
-      Our work introduces a scalable trusted execution environment for multi-host CXL disaggregated shared memory. [[Paper]](/uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf)
+      Our work introduces a scalable trusted execution environment for multi-host CXL disaggregated shared memory. [[Paper]](/uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf) [[Slides]](/uploads/MICRO2026-latest.pdf)
   - title: 'AIORE presented at NVMW 2026'
     date: '2026-03-09'
     category: 'Talk'
@@ -197,6 +197,8 @@ publications:
     links:
       - name: Paper
         url: /uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf
+      - name: Slides
+        url: /uploads/MICRO2026-latest.pdf
 
   - title: 'ALT-index: A Hybrid Learned Index for Concurrent Memory Database Systems'
     date: '2025-05-21'
@@ -225,10 +227,11 @@ publications:
 
 talks:
   - title: 'Decoupled-DSM: A Scalable Secure Trusted Execution Environment for Multi-Host CXL Disaggregated Shared Memory'
+    url: /uploads/MICRO2026-latest.pdf
     date: '2026-11-04'
     awarder: 'MICRO 2026'
     summary: |
-      **Yuxin Yang** presented this work at MICRO 2026 in Athens, Greece. [[Paper]](/uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf)
+      **Yuxin Yang** presented this work at MICRO 2026 in Athens, Greece. [[Paper]](/uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf) [[Slides]](/uploads/MICRO2026-latest.pdf)
   - title: 'AIORE: Efficient Security Support for CXL Memory through Adaptive Incremental Offloaded (Re-)Encryption'
     date: '2026-03-09'
     awarder: 'NVMW 2026'
