@@ -192,7 +192,7 @@ publications:
     venue: 'The 59th IEEE/ACM International Symposium on Microarchitecture (MICRO), 2026'
     authors: '**Yuxin Yang**, Yuanchao Xu.'
     summary: |
-      Keeps memory allocation on CXL devices and offloads permission checks to host-side trusted execution environments for secure multi-host shared memory.
+      Decoupled-DSM enables secure, scalable CXL memory sharing by decoupling device-side memory management from host-side access control.
     links:
       - name: Paper
         url: /uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf
