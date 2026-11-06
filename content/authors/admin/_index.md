@@ -190,7 +190,6 @@ publications:
     date: '2026-01-01'
     venue_short: 'MICRO'
     venue: 'The 59th IEEE/ACM International Symposium on Microarchitecture (MICRO), 2026'
-    status: 'Accepted'
     authors: '**Yuxin Yang**, Yuanchao Xu.'
     summary: |
       Keeps memory allocation on CXL devices and offloads permission checks to host-side trusted execution environments for secure multi-host shared memory.
