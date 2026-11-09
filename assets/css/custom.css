@@ -94,6 +94,139 @@
   outline-color: rgb(var(--color-primary-300));
 }
 
+/* Compact news with native scrolling and keyboard access. */
+.news {
+  --news-text: #172033;
+  --news-muted: #586579;
+  --news-border: #e2e8f0;
+  --news-accent: rgb(var(--color-primary-700));
+  --news-track: #f1f5f9;
+  --news-thumb: #94a3b8;
+  width: min(100% - 3rem, 65ch);
+  color: var(--news-text);
+}
+
+.dark .news {
+  --news-text: #edf2f7;
+  --news-muted: #a6b2c3;
+  --news-border: #344155;
+  --news-accent: rgb(var(--color-primary-300));
+  --news-track: #1f2937;
+  --news-thumb: #64748b;
+}
+
+.news-scroll {
+  max-height: 15rem;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding-inline: 0.25rem 0.75rem;
+  border-block: 1px solid var(--news-border);
+}
+
+.news-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.news-scroll::-webkit-scrollbar-track {
+  background: var(--news-track);
+  border-radius: 8px;
+}
+
+.news-scroll::-webkit-scrollbar-thumb {
+  background: var(--news-thumb);
+  border: 2px solid var(--news-track);
+  border-radius: 8px;
+}
+
+.news-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--news-accent);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .news-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--news-thumb) var(--news-track);
+  }
+}
+
+.news-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.news-item {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding-block: 0.75rem;
+  border-bottom: 1px solid var(--news-border);
+}
+
+.news-item:last-child {
+  border-bottom: 0;
+}
+
+.news-date {
+  color: var(--news-muted);
+  font-size: 0.8125rem;
+  line-height: 1.85;
+  white-space: nowrap;
+}
+
+.news-content {
+  min-width: 0;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.news-content:only-child {
+  grid-column: 1 / -1;
+}
+
+.news-title {
+  font-weight: 500;
+}
+
+.news-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-left: 0.625rem;
+}
+
+.news-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  color: var(--news-accent);
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.news-scroll:focus-visible,
+.news-link:focus-visible {
+  outline: 2px solid var(--news-accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .news-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.125rem;
+    padding-block: 0.625rem;
+  }
+}
+
+@media print {
+  .news-scroll {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
 /* Publications: scoped styles for the custom Hugo Blox section. */
 .publications {
   --pub-text: #172033;

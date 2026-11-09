@@ -10,39 +10,39 @@
 {{ end }}
 {{ $news := $person_page.Params.news }}
 {{ $date_format := $block.design.date_format | default "Jan 2, 2006" }}
+{{ $heading_id := printf "news-heading-%s" ($block.id | default $author) }}
 
-<div class="w-full max-w-prose mx-auto">
-  <h2 class="mb-4 text-3xl font-bold text-gray-900 dark:text-white">
+<div class="news mx-auto">
+  <h2 id="{{ $heading_id }}" class="mb-4 text-3xl font-bold text-gray-900 dark:text-white">
     {{ $block.content.title | default "News" | markdownify | emojify }}
   </h2>
 
   {{ with $block.content.text }}<p class="mb-4 text-gray-600 dark:text-gray-300">{{ . | markdownify | emojify }}</p>{{ end }}
 
   {{ if $news }}
-    <ol class="w-full">
-      {{ $sorted_news := sort $news ".date" "desc" }}
-      {{ $last_index := sub (len $sorted_news) 1 }}
-      {{ range $index, $item := $sorted_news }}
-        {{ if ne $index $last_index }}
-          <li class="mb-4 border-b border-gray-200 pb-4 dark:border-gray-700">
-        {{ else }}
-          <li>
+    <div class="news-scroll" role="region" aria-labelledby="{{ $heading_id }}" tabindex="0">
+      <ol class="news-list" role="list">
+        {{ range sort $news ".date" "desc" }}
+          {{ $item := . }}
+          <li class="news-item">
+            {{ if .date }}
+              <time class="news-date" datetime="{{ (time .date).Format "2006-01-02" }}">
+                {{ (time .date) | time.Format $date_format }}
+              </time>
+            {{ end }}
+            <div class="news-content">
+              <span class="news-title">{{ .title | markdownify | emojify }}</span>
+              {{ with .links }}
+                <span class="news-links">
+                  {{ range . }}
+                    <a class="news-link" href="{{ .url | relURL }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .name }}: {{ $item.title }}">{{ .name }}</a>
+                  {{ end }}
+                </span>
+              {{ end }}
+            </div>
+          </li>
         {{ end }}
-          {{ if $item.date }}
-            <time class="block text-sm font-normal leading-none text-gray-500 dark:text-gray-300">
-              {{ (time $item.date) | time.Format $date_format }}
-            </time>
-          {{ end }}
-
-          <div class="mt-1 font-medium text-gray-900 dark:text-white">
-            {{ $item.title | markdownify | emojify }}
-          </div>
-
-          {{ with $item.summary }}
-            <div class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">{{ . | markdownify | emojify }}</div>
-          {{ end }}
-        </li>
-      {{ end }}
-    </ol>
+      </ol>
+    </div>
   {{ end }}
 </div>

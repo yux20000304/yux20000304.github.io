@@ -73,36 +73,37 @@ work:
       Teaching Assistant for CSE 121 (Embedded System Design).
 
 news:
-  - title: 'Received a MICRO 2026 Student Travel Grant'
+  - title: 'MICRO 2026 Student Travel Grant'
     date: '2026-10-13' # Homepage announcement date.
     category: 'Award'
-    summary: |
-      The grant supports my attendance at MICRO 2026.
   - title: 'ALT-index+ accepted to ACM TOS'
     date: '2026-10-13' # Homepage announcement date.
     category: 'Publication'
-    summary: |
-      Our extended ALT-index work adds non-blocking retraining and parallel bulkloading for concurrent memory systems.
   - title: 'Decoupled-DSM accepted to MICRO 2026'
     date: '2026-07-08'
     category: 'Publication'
-    summary: |
-      Our work introduces a scalable trusted execution environment for multi-host CXL disaggregated shared memory. [[Paper]](/uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf) [[Slides]](/uploads/MICRO2026-latest.pdf)
+    links:
+      - name: Paper
+        url: /uploads/MICRO_Decoupled_DSM_Camera_ready_.pdf
+      - name: Slides
+        url: /uploads/MICRO2026-latest.pdf
   - title: 'AIORE presented at NVMW 2026'
     date: '2026-03-09'
     category: 'Talk'
-    summary: |
-      I presented our work on adaptive incremental offloaded (re-)encryption for secure CXL memory.
   - title: 'ALT-index accepted to ICDE 2025'
     date: '2024-11-27'
     category: 'Publication'
-    summary: |
-      Our hybrid learned index for concurrent in-memory database systems will appear at ICDE 2025. [[Paper]](/uploads/ALT-Index_A_Hybrid_Learned_Index_for_Concurrent_Memory_Database_Systems.pdf) [[Slides]](/uploads/icde25_slides.pdf)
-  - title: 'Best Paper nomination at ICCD 2023'
+    links:
+      - name: Paper
+        url: /uploads/ALT-Index_A_Hybrid_Learned_Index_for_Concurrent_Memory_Database_Systems.pdf
+      - name: Slides
+        url: /uploads/icde25_slides.pdf
+  - title: 'ICCD 2023 Best Paper Nomination'
     date: '2023-11-08'
     category: 'Award'
-    summary: |
-      Our work on low-latency, scalable metadata management for distributed file systems was nominated for Best Paper. [[Paper]](/uploads/Low-Latency_and_Scalable_Full-path_Indexing_Metadata_Service_for_Distributed_File_Systems.pdf)
+    links:
+      - name: Paper
+        url: /uploads/Low-Latency_and_Scalable_Full-path_Indexing_Metadata_Service_for_Distributed_File_Systems.pdf
 
 # work:
 #   - position: Director of Cloud Infrastructure
