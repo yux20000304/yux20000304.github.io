@@ -1,0 +1,4 @@
+{{ if and .IsHome (eq .Params.design.layout "sidebar") }}
+  {{ $styles := resources.Get "css/home-layout.css" | minify | fingerprint "sha256" }}
+  <link rel="stylesheet" href="{{ $styles.RelPermalink }}" integrity="{{ $styles.Data.Integrity }}" crossorigin="anonymous">
+{{ end }}

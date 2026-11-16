@@ -1,0 +1,28 @@
+{{/* Keep the sidebar specific to the homepage; other landing pages use standard Blox. */}}
+{{ $sidebar := and .IsHome (eq .Params.design.layout "sidebar") }}
+{{ if $sidebar }}
+  <a class="home-skip-link" href="#main-content">Skip to content</a>
+  {{ $bio := index (where .Params.sections "block" "compact-biography") 0 }}
+  {{ with $bio.design.banner.filename }}
+    {{ with resources.Get (path.Join "media" .) }}
+      {{ $banner := .Resize "2400x webp" }}
+      <div class="home-banner" aria-hidden="true">
+        <img src="{{ $banner.RelPermalink }}" width="{{ $banner.Width }}" height="{{ $banner.Height }}" alt="" fetchpriority="high">
+      </div>
+    {{ end }}
+  {{ end }}
+  <div class="academic-home">
+    {{ partial "home/profile.html" . }}
+    <main id="main-content" class="home-content" tabindex="-1">
+{{ end }}
+
+{{ range .Params.sections }}
+  {{ if or (not .demo) (.demo | and (eq (os.Getenv "HUGO_BLOX_DEMO") "true")) }}
+    {{ partial "functions/parse_block_v2" (dict "page" $ "block" .) }}
+  {{ end }}
+{{ end }}
+
+{{ if $sidebar }}
+    </main>
+  </div>
+{{ end }}

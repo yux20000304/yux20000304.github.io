@@ -75,6 +75,6 @@
     }
   });
 
-  socialLinks.after(panel);
+  (socialLinks.closest('.profile-actions') || socialLinks).after(panel);
   link.replaceWith(trigger);
 })();

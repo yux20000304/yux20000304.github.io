@@ -1,0 +1,2 @@
+<h2>{{ .wcBlock.content.title | markdownify | emojify }}</h2>
+{{ with .wcBlock.content.text }}<div class="home-prose">{{ . | $.wcPage.RenderString }}</div>{{ end }}

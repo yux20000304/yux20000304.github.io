@@ -1,0 +1,8 @@
+{{ $block := .wcBlock }}
+{{ $author := $block.content.username | default "admin" }}
+{{ $person := site.GetPage (printf "/authors/%s" $author) }}
+{{ if not $person }}{{ errorf "Could not find biography author `%s`." $author }}{{ end }}
+<h2>{{ $block.content.title | default "About" }}</h2>
+<div class="home-biography">
+  {{ with $block.content.text }}{{ . | $.wcPage.RenderString }}{{ else }}{{ $person.Content }}{{ end }}
+</div>

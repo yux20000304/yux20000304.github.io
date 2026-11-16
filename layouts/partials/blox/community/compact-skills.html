@@ -1,0 +1,30 @@
+{{/* Compact skills and hobbies, using the author's existing icons and labels. */}}
+{{ $page := .wcPage }}
+{{ $block := .wcBlock }}
+{{ $author := $block.content.username | default "admin" }}
+{{ $person_page_path := printf "/authors/%s" $author }}
+{{ $person_page := site.GetPage $person_page_path }}
+{{ if not $person_page }}
+  {{ errorf "Could not find an author page at `%s`. Please check the `username` in your compact-skills block." $person_page_path }}
+{{ end }}
+
+<h2>{{ $block.content.title | default "Skills & Hobbies" | markdownify | emojify }}</h2>
+{{ with $block.content.text }}<div class="skills-intro">{{ . | emojify | $page.RenderString }}</div>{{ end }}
+<div class="compact-skills">
+  {{ range $person_page.Params.skills }}
+    <div class="skill-group">
+      <h3>{{ .name | markdownify | emojify }}</h3>
+      {{ with .description }}<div class="skill-group-description">{{ . | markdownify | emojify }}</div>{{ end }}
+      <ul class="skill-tags" role="list">
+        {{ range .items }}
+          <li class="skill-tag">
+            {{ with .icon }}
+              <span class="skill-tag-icon" aria-hidden="true">{{ partial "functions/get_icon" (dict "name" . "attributes" "class=\"skill-icon\" aria-hidden=\"true\" focusable=\"false\"") }}</span>
+            {{ end }}
+            <span class="skill-tag-label">{{ .name | markdownify | emojify }}{{ with .description }}<span class="skill-description">{{ . | markdownify | emojify }}</span>{{ end }}</span>
+          </li>
+        {{ end }}
+      </ul>
+    </div>
+  {{ end }}
+</div>

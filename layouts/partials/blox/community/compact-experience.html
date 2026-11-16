@@ -1,0 +1,52 @@
+{{/* Compact experience and education, using the existing author data. */}}
+{{ $page := .wcPage }}
+{{ $block := .wcBlock }}
+{{ $author := $block.content.username | default "admin" }}
+{{ $person_page_path := printf "/authors/%s" $author }}
+{{ $person_page := site.GetPage $person_page_path }}
+{{ if not $person_page }}
+  {{ errorf "Could not find an author page at `%s`. Please check the `username` in your compact-experience block." $person_page_path }}
+{{ end }}
+{{ $person := $person_page.Params }}
+{{ $date_format := $block.design.date_format | default "January 2006" }}
+{{ $experience := dict "title" (i18n "experience" | default "Experience") "entries" $person.work "education" false }}
+{{ $education := dict "title" (i18n "education" | default "Education") "entries" $person.education "education" true }}
+{{ $groups := slice $experience $education }}
+{{ if $block.design.is_education_first }}
+  {{ $groups = slice $education $experience }}
+{{ end }}
+
+<div class="compact-experience">
+  {{ range $groups }}
+    {{ $group := . }}
+    {{ if .entries }}
+      <div class="resume-group">
+        <h2>{{ .title }}</h2>
+        <ol class="resume-list" role="list">
+          {{ range .entries }}
+            <li class="resume-entry">
+              <h3 class="resume-title">{{ if $group.education }}{{ .area }}{{ else }}{{ .position }}{{ end }}</h3>
+              <p class="resume-place">
+                {{ if $group.education }}
+                  {{ .institution }}
+                {{ else }}
+                  {{ with .company_url }}<a href="{{ . | relURL }}" target="_blank" rel="noopener noreferrer">{{ end }}
+                  {{ .company_name }}
+                  {{ with .company_url }}</a>{{ end }}
+                {{ end }}
+              </p>
+              <p class="resume-date">
+                {{ with .date_start }}<time datetime="{{ (time .).Format "2006-01-02" }}">{{ (time .) | time.Format $date_format }}</time> – {{ end }}
+                {{ with .date_end }}<time datetime="{{ (time .).Format "2006-01-02" }}">{{ (time .) | time.Format $date_format }}</time>{{ else }}{{ i18n "present" | default "Present" }}{{ end }}
+              </p>
+              {{ with .summary }}<div class="resume-summary">{{ . | $page.RenderString }}</div>{{ end }}
+              {{ with .button }}
+                <a class="resume-link" href="{{ .url | relURL }}" target="_blank" rel="noopener noreferrer">{{ .text }}</a>
+              {{ end }}
+            </li>
+          {{ end }}
+        </ol>
+      </div>
+    {{ end }}
+  {{ end }}
+</div>

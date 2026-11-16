@@ -1,0 +1,4 @@
+{{ if and .IsHome (eq .Params.design.layout "sidebar") }}
+  {{ $script := resources.Get "js/home-layout.js" | minify | fingerprint "sha256" }}
+  <script src="{{ $script.RelPermalink }}" defer></script>
+{{ end }}

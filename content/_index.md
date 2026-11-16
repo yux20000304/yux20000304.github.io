@@ -4,15 +4,17 @@ date: 2023-10-24
 type: landing
 
 design:
-  # Default section spacing
-  spacing: "4rem"
+  layout: sidebar
+  spacing: "clamp(1.5rem, 3vw, 2rem)"
 
 # Note: `username` refers to the user's folder name in `content/authors/`
 
 # Page sections
 sections:
-  - block: biography
+  - block: compact-biography
+    id: section-resume-biography
     content:
+      title: About
       username: admin
       # Show a call-to-action button under your biography? (optional)
       button:
@@ -20,23 +22,21 @@ sections:
         url: uploads/resume.pdf
     design:
       banner:
-        # Upload your cover image to the `assets/media/` folder and reference it here
         filename: kalen-emsley-Bkci_8qcdvQ-unsplash.jpg
-      biography:
-        # Customize the style of your biography text
-        style: 'text-align: justify; font-size: 0.8em;'
   - block: news
     content:
       title: News
       username: admin
     design:
       date_format: 'Jan 2, 2006'
-  - block: experience
+  - block: compact-experience
+    id: section-resume-experience
     content:
+      title: Background
       username: admin
     design:
       # Hugo date format
-      date_format: 'January 2006'
+      date_format: 'Jan 2006'
       # Education or Experience section first?
       is_education_first: false
   - block: publication
@@ -49,13 +49,14 @@ sections:
       username: admin
     design:
       date_format: 'Jan 2, 2006'
-  - block: markdown
+  - block: compact-text
     id: academic-service
     content:
       title: Academic Service
       text: |-
         **Reviewer**, IEEE Transactions on Computers
-  - block: skills
+  - block: compact-skills
+    id: section-resume-skills
     content:
       title: Skills & Hobbies
       username: admin

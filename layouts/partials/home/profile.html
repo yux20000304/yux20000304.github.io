@@ -1,0 +1,46 @@
+{{ $bio := index (where .Params.sections "block" "compact-biography") 0 }}
+{{ $author := $bio.content.username | default "admin" }}
+{{ $person := site.GetPage (printf "/authors/%s" $author) }}
+{{ if not $person }}{{ errorf "Could not find homepage author `%s`." $author }}{{ end }}
+
+<aside class="profile-sidebar" aria-label="Profile and page navigation">
+  <div id="profile">
+    {{ with ($person.Resources.ByType "image").GetMatch "*avatar*" }}
+      {{ $avatar := .Fill "288x288 Center webp" }}
+      <img class="profile-avatar" src="{{ $avatar.RelPermalink }}" width="144" height="144" alt="{{ $person.Title }}" fetchpriority="high">
+    {{ end }}
+    <h1 class="profile-name">{{ $person.Title }}</h1>
+    {{ with $person.Params.role }}<p class="profile-role">{{ . | markdownify | emojify }}</p>{{ end }}
+    {{ range $person.Params.organizations }}
+      <p class="profile-organization">{{ with .url }}<a href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ end }}{{ .name }}{{ if .url }}</a>{{ end }}</p>
+    {{ end }}
+
+    <div class="profile-actions">
+    <ul class="network-icon" aria-label="Contact and academic profiles">
+      {{ $labels := dict "envelope" "Email" "brands/github" "GitHub" "brands/linkedin" "LinkedIn" "brands/google-scholar" "Google Scholar" }}
+      {{ range $person.Params.profiles }}
+        {{ $link := .url | default .link }}
+        {{ $external := in (slice "http" "https") (urls.Parse $link).Scheme }}
+        {{ $label := .label | default (index $labels .icon) | default .icon }}
+        <li><a href="{{ $link | safeURL }}" aria-label="{{ $label }}" title="{{ $label }}" {{ if $external }}target="_blank" rel="noopener noreferrer"{{ end }}>
+          {{ partial "functions/get_icon" (dict "name" .icon "attributes" "aria-hidden=\"true\" focusable=\"false\"") }}
+        </a></li>
+      {{ end }}
+    </ul>
+
+    {{ with $bio.content.button }}
+      <a class="profile-cv" href="{{ .url | relURL }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .text }}" title="{{ .text }}">
+        {{ partial "functions/get_icon" (dict "name" "arrow-down-tray" "attributes" "aria-hidden=\"true\"") }}
+        {{ .text }}
+      </a>
+    {{ end }}
+    </div>
+  </div>
+
+  <nav class="profile-nav" aria-label="On this page">
+    {{ range .Params.sections }}
+      {{ $id := .id | default (printf "section-%s" .block) }}
+      <a href="#{{ $id }}">{{ .content.title }}</a>
+    {{ end }}
+  </nav>
+</aside>
